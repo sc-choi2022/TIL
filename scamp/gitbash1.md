@@ -213,6 +213,14 @@ branch를 만든다.
 
 현재 branch에서 브랜치이름을 병합시킨다.
 
+### $ git checkout master
+
+
+
+### $ git reset --hard (commit id)
+
+commit id는 git log를 통해 확인할 수 있다.
+
 #### CONFLICT (pull에서도 마찬가지)
 
 A'B + AB' = A'B'
