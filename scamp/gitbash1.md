@@ -129,7 +129,7 @@ origin master는 계속 사용하니 설정을 저장하여 이후에는 생략�
 
 ### $ git commit
 
-git commit 을 입력하게 되면 VIM text editor가 나오게 된다.
+git commit 을 입력하게 되면 **VIM text editor**가 나오게 된다.
 
 i를 입력하면 insert모드가 되어 입력이 가능하다.
 
@@ -157,3 +157,66 @@ git 위치를 다시 설정하고 싶은 경우에 사용한다.
 
 기존에 git init를 했던 directory에서 입력하면 .git 이 삭제된다.
 
+## Clone
+
+### $ git clone url
+
+git이 아닌 상태에서 GitHub의 Repository를 복사해서 오는 것
+
+가장 처음 1번하면 된다.
+
+1. git clone url : Repository의 이름으로 폴더를 생성하여 clone
+2. git clone url . : Git Bash가 실행된 폴더에 clone
+3. git clone url 폴더이름 : 폴더이름을 생성하여 clone
+
+3가지 방법이 있고 1번째 방법을 사용해봤다.
+
+### $ git pull
+
+최초의 clone 이후 (또는 이미 Git인 상태에서 ) GitHub의 commit으로 최신화 시키는 것
+
+### git clone 폴더에서는 git init는 수행하지 않아도 된다.
+
+$ git pull ($ touch a.txt) $ git add . $ git commit -m '메세지' $ git push 를 반복하는 작업을 통해 최신의 것을 GitHub에 Push한다.
+
+### $ git log 결과를 통해 Push 결과확인
+
+Push를 통해 업데이트가 잘 되었는지 확인하는 방법
+
+결과가 (HEAD -> master, origin/master, origin/HEAD)가 한 줄에 나타날 경우 업데이트가 잘 되었다는 의미이다.
+
+만약 (HEAD -> master)와 (origin/master, origin/HEAD)가 다른 줄에 나타날 경우 Push가 필요하다는 의미이다.
+
+## Branch
+
+### $ git branch
+
+어떤 branch가 존재하는지, *이 있는 것이 현재 branch
+
+### $ git branch 브랜치 이름
+
+branch를 만든다.
+
+### $ git switch 브랜치 이름
+
+해당 브랜치로 옮긴다.
+
+### $ git branch -c 브랜치이름
+
+브랜치를 만들고 동시에 해당 브랜치로 옮긴다.
+
+### $ git branch -d 브랜치이름
+
+브랜치를 삭제한다.
+
+### $ git merge 브랜치이름
+
+현재 branch에서 브랜치이름을 병합시킨다.
+
+#### CONFLICT (pull에서도 마찬가지)
+
+A'B + AB' = A'B'
+
+A' + A'' = CONFLICT!
+
+* CONFLICT에서 해결 후 add, commit
