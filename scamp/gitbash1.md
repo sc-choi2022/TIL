@@ -241,11 +241,41 @@ commit id는 git log를 통해 확인할 수 있다.
 
 #### CONFLICT (pull에서도 마찬가지)
 
+1.
+
 A'B + AB' = A'B'
 
 A' + A'' = CONFLICT!
 
 * CONFLICT에서 해결 후 add, commit
+
+2.
+
+git merge에서의 CONFLICT
+
+master - a.txt
+
+new branch 를 만들고 a.txt를 수정
+
+master - a.txt 를 수정
+
+master branch에서 new branch에 new를 merge
+
+**CONFLICT**
+
+3.
+
+GitHub에서의 CONFLICT
+
+컴퓨터 A, 컴퓨터 B, GitHub가 존재
+
+컴퓨터 A가 a'로 수정하여 GitHub에 push
+
+컴퓨터 B가 a''로 수정하여 commit
+
+컴퓨터 B가 GitHub를 pull
+
+**CONFLICT**
 
 ---
 
