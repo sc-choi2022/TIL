@@ -97,7 +97,13 @@ commit 상태를 확인하는 git log를 oneline으로 확인할 수 있도록 �
 
 commit 상태를 숫자의 갯수만큼만 확인하는 것
 
+### $ git log --oneline --all
 
+다른 branch의 상태를 확인할 수 있도록 하는 것
+
+### $ git log --oneline --all --graph
+
+branch의 구조를 확인할 수 있게 보여주는 것
 
 ## GitHub와 연결
 
@@ -207,7 +213,7 @@ branch를 만든다.
 
 ### $ git branch -d 브랜치이름
 
-브랜치를 삭제한다.
+branch를 삭제한다.
 
 ### $ git merge 브랜치이름
 
@@ -215,11 +221,23 @@ branch를 만든다.
 
 ### $ git checkout master
 
+옛날 명령어로 checkout은 두가지 기능을 가지고 있다.
 
+이를 분리한 것 중 하나가 switch이다.
+
+### $ git log --oneline --all
+
+다른 branch의 상태를 확인할 수 있도록 하는 것
+
+### $ git log --oneline --all --graph
+
+branch의 구조를 확인할 수 있게 보여주는 것
 
 ### $ git reset --hard (commit id)
 
 commit id는 git log를 통해 확인할 수 있다.
+
+강력하게(hard) 이전의 commit id로 reset을 한다 
 
 #### CONFLICT (pull에서도 마찬가지)
 
@@ -228,3 +246,27 @@ A'B + AB' = A'B'
 A' + A'' = CONFLICT!
 
 * CONFLICT에서 해결 후 add, commit
+
+---
+
+### $ git ignore
+
+ $touch .gitignore 을 반들어 .txt 파일을 통해 열고
+
+개인정보, 라이브러리와 같이 ignore할 파일을 작성한다.
+
+작성된 파일은 $git status를 통해서 확인되지 않는다.
+
+**gitignore.io** 에 운영체제, 개발 환령(IDE), 프로그래밍 언어 등을 넣어 작성에 도움을 받을 수 있다.
+
+반드시 **.gitignore** 이름으로 만들어야 한다. 
+
+***이미 staging area에서 관리되어지고 있는 파일은 ignore되지 않는다***
+
+
+
+이후에 가상환경을 사용하게 되는데, 그 때마다 필요한 코드모음을 다운받아 사용하게 된다.
+
+그런데 그 자체를 GitHub에 올리면 용량이 너무 커지게 되어 requirements 를 만들어 라이브러리의 이름만을 적어두게 될 것
+
+이런 라이브러리에 gitignore를 사용하여 무시
