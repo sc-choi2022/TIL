@@ -18,9 +18,11 @@
 
 
 
-### Jupyter Lab
+#### Jupyter Lab
 
 웹 브라우저 환경에서 코드를 작성할 수 있는 오픈소스
+
+대화형 환경 (e.g) Python 기본 Interpreter
 
 
 
@@ -78,6 +80,7 @@ Python에서 제안하는 스타일 가이드 : PEP8
 
 * type()
   * 변수에 할당된 값의 타입
+  * 변수 활용의 핵심은 **이 변수의 type이 무엇인가**이다.
 * id()
   * 변수에 할당된 값(객체)의 고유한 identity 값이며, 메모리주소
 
@@ -97,7 +100,7 @@ x = y
 y = tmp
 ```
 
-Python에서의 방법
+Python에서의 방법 (Pythonic!)
 
 ```python
 x, y = 10, 20
@@ -119,6 +122,10 @@ y, x = x, y
 * 예약어는 사용할 수 없음
 * 내장함수나 모듈 등의 이름으로 만들면 안됨
 
+RedApple : CamelCase
+
+**red_apple : snake_case**
+
 
 
 #### 예약어(reserved words)
@@ -132,7 +139,7 @@ print(keyword.kwlist)
 ['False', 'None', 'True', '__peg_parser__', 'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield']
 ```
 
-
+* 사용시에 SyntaxError: cannot assign to False 와 같은 error가 나온다.
 
 #### 사용자 입력
 
@@ -162,6 +169,7 @@ input()
 
 * 한 줄 씩 '#' 사용
 * """ 또는 '''으로 표현
+* ctrl + / 를 이용해서 주석 작성
 
 특수한 형태의 주석
 
@@ -186,6 +194,16 @@ input()
 True / False 값을 가진 타입
 
 비교/논리 연산 수행에 활용
+
+```python
+if lit: '''
+		만약 list lit이 []이라면 False
+		만약 list lit이 []이 아니라면 True
+		전자의 경우라면 if문이 실행되지 않을 것
+		'''
+```
+
+
 
 **False로 변환되는 것**
 
@@ -279,15 +297,15 @@ print('''문자열 안에 '작은 따옴표'나 "큰 따옴표"를 사용할 수
 
 문자열 내에서 특정 문자나 조작을 위해서 백슬래시(\)를 활용하여 구분
 
-| Escape sequence | 의미       |
-| --------------- | ---------- |
-| \n              | 줄 바꿈    |
-| \t              | 탭         |
-| \r              | 캐리지리턴 |
-| \0              | 널(Null)   |
-| \\\             | \\         |
-| \\'             | '          |
-| \\"             | "          |
+| Escape sequence | 의미              |
+| --------------- | ----------------- |
+| \n              | 줄 바꿈(new line) |
+| \t              | 탭                |
+| \r              | 캐리지리턴        |
+| \0              | 널(Null)          |
+| \\\             | \\                |
+| \\'             | '                 |
+| \\"             | "                 |
 
 캐리지리턴
 
@@ -307,7 +325,7 @@ print('철수 \'안녕\'')
 
 
 
-##### String Interpolation
+##### String Interpolation (문자열 사이에 변수)
 
 %-formatting
 
@@ -355,3 +373,11 @@ f'원주율은 {pi:.3}. 반지름이 2일때 원의 넒이는 {pi*2*2}'
 값이 없음을 표현하기 위한 타입
 
 반환 값이 없는 함수에서 사용하기도 함
+
+```python
+a = print()
+print(a)
+
+None
+```
+
