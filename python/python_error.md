@@ -1,0 +1,16 @@
+# TypeError
+
+
+
+
+
+# ValueError
+
+
+
+# NameError
+
+
+
+# SyntaxError
+
