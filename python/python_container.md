@@ -12,15 +12,16 @@
 
 Container
 
-* Sequence Container(시퀀스형,순서가 있는 데이터)
+* Sequence Container(시퀀스형,순서가 있는(ordered) 데이터)
   * List(가변형)
   * Tuple(불변형)
   * Range(불변형)
-* 비시퀀스형(순서가 없는 데이터)
+  * String(불변형)
+* Non-sequence Contatiner(순서가 없는(unodered) 데이터)
   * Set(가변형)
   * Dictionary(가변형)
 
-**순서가 있다 != 정렬되어 있다**
+**순서가 있다(orderd) != 정렬되어 있다(sorted)**
 
 순서가 있다 예) 2314
 
@@ -29,6 +30,8 @@ Container
 
 
 #### Sequence Container
+
+특정 위치의 데이터를 가리킬 수 있습니다.
 
 ##### List
 
@@ -51,7 +54,7 @@ List는 순서를 가지고 있기 때문에 Index를 통해 접근 가능하다
 ```python
 print(my_place[1])
 
-'경기'
+경기
 ```
 
 
@@ -66,9 +69,9 @@ print(basket[2][1])
 print(basket[2][-1][2])
 
 3
-['apple','kiwi','mango']
-'kiwi'
-'n'
+['apple', 'kiwi', 'mango']
+kiwi
+n
 ```
 
 
@@ -137,15 +140,15 @@ print(x,y)
 
 ##### Range
 
-: 숫자의 시퀀스를 나타내기 위해 사용함.
+: 정수의 시퀀스를 나타내기 위해 사용함.
 
 
 
-range(n) :  0부터 n-1까지의 숫자 시퀀스
+range(n) :  0부터 n-1까지의 정수 시퀀스
 
-range(n,m) : n부터 m-1까지의 숫자 시퀀스
+range(n,m) : n부터 m-1까지의 정수 시퀀스
 
-range(n,m,s) : n부터 m-1까지 s씩 증가시킨 숫자 시퀀스
+range(n,m,s) : n부터 m-1까지 s씩 증가시킨 정수 시퀀스
 
 ```python
 range(4)
@@ -188,7 +191,7 @@ cf) * : asterisk
 
 우변의 Object 수가 좌변의 Variable 수 보다 많을 경우 객체를 순서대로 대입
 
-나머지 항목들은 모두 asterisk 기호 표시된 변수에 list로 대입
+나머지 항목들은 모두 asterisk 기호 표시된 변수에 **list**로 대입
 
 ```python
 x, *y = 1, 2, 3, 4
@@ -214,7 +217,7 @@ argument 이름이 *로 시작하는 경우, argument unpacking이라고 한다.
 
 \* Packing의 경우, list로 대입
 
-\* Unpacking의 경우, tuple 형태로 대입
+\* Unpacking의 경우, **tuple** 형태로 대입
 
 ```python
 def multiply(x, y, z):
@@ -243,7 +246,7 @@ Packing / Unpacking 연산자 *
 
 
 
-### Associative Container
+### Non-sequence Contatiner
 
 ##### Set
 
@@ -308,6 +311,37 @@ len(set(area_list))
 
 
 
+Set 집합 연산자
+
+```python
+set_a = {1, 2, 3}
+set_b = {3, 6, 9}
+s1 = set_a - set_b
+print(s1)
+
+{1, 2}
+```
+
+```python
+set_a = {1, 2, 3}
+set_b = {3, 6, 9}
+a1 = set_a | set_b
+print(a1)
+
+{1, 2, 3, 6, 9}
+```
+
+```python
+set_a = {1, 2, 3}
+set_b = {3, 6, 9}
+b1 = set_a & set_b
+print(b1)
+
+{3}
+```
+
+
+
 ##### Dictionary
 
 : 순서 없이 key-value 쌍으로 이루어진 Object를 참조하는 자료형
@@ -341,5 +375,55 @@ print(dict_c['c'])
 <class 'dict'>
 {'a': '사과', 'b': '벌', 'c': '사탕'}
 사탕
+```
+
+
+
+<u>dictionary에 중복된 key는 존재할 수 없습니다.</u>
+
+```python
+dict_a = {1: 1, 2: 2, 3: 3, 1: 4}
+print(dict_a)
+
+{1: 4, 2: 2, 3: 3}
+```
+
+
+
+dictionary의 .keys() 메소드를 활용하여 key를 확인
+
+```python
+area = {'서울':'02','경기':'031'}
+print(area.keys())
+print(type(area.keys()))
+
+dict_keys(['서울', '경기'])
+<class 'dict_keys'>
+```
+
+
+
+dictionary의 .values() 메소드를 활용하여 value를 확인
+
+```python
+area = {'서울':'02','경기':'031'}
+print(area.values())
+print(type(area.values()))
+
+dict_values(['02', '031'])
+<class 'dict_values'>
+```
+
+
+
+dictionary의 .items() 메소드를 활용하여 key, value를 확인
+
+```python
+area = {'서울':'02','경기':'031'}
+print(area.items())
+print(type(area.items()))
+
+dict_items([('서울', '02'), ('경기', '031')])
+<class 'dict_items'>
 ```
 
