@@ -223,6 +223,23 @@ IndexError: string index out of range
 
 
 
+# KeyError
+
+```python
+dic = {1: 2, 2: 3}
+
+print(dic[3])
+KeyError                                  Traceback (most recent call last)
+Input In [40], in <module>
+      2 print(dic[1])
+      3 print(dic.get(1))
+----> 5 print(dic[3])
+
+KeyError: 3
+```
+
+
+
 # NameError
 
 ```python
