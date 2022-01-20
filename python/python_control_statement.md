@@ -137,6 +137,8 @@ print(value)
 
 종료조건에 해당하는 코드를 통해 반복문을 종료시켜야 함.
 
+<u>값 초기화도 중요</u>
+
 ```python
 while <조건식>:
     <코드 블럭>
@@ -150,6 +152,8 @@ while 문 역시 조건식 뒤에 콜론(:)이 반드시 필요하다
 
 실행될 코드 블럭은 4spaces로 들여쓰기를 한다.
 반드시 종료조건을 설정해야 한다.
+
+
 
 ```python
 a = 0
@@ -271,6 +275,20 @@ print(cubic_list)
 [1, 8, 27]
 ```
 
+```
+a = [x for x in range(3)]
+b = [x**2 for x in [1,2,3,4,5,6]]
+c = [x**2 for x in [1,2,3,4,5,6] if x%2]
+
+print(a)
+print(b)
+print(c)
+
+[0, 1, 2]
+[1, 4, 9, 16, 25, 36]
+[1, 9, 25]
+```
+
 
 
 ##### Dictionary comprehension
@@ -287,6 +305,20 @@ iterable에서 dict를 생성할 수 있습니다.
 {키: 값 for 요소 in iterable}
 
 dict({키: 값 for 요소 in iterable})
+```
+
+```python
+cubic_dict = {}
+
+for number in range(1,4):
+    cubic_dict[number] = number**3
+cubic_dict
+
+# Dictionary Comprehension
+{number:number**3 for number in range(1,4)}
+
+{1: 1, 2: 8, 3: 27}
+{1: 1, 2: 8, 3: 27}
 ```
 
 

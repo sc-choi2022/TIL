@@ -34,6 +34,12 @@ Output(결과값)
 
 함수는 동작 후 return을 통해 결과값을 전달함
 
+```python
+def <함수이름>(parameter1, parameter2):
+    <코드 블럭>
+    return value
+```
+
 
 
 함수는 함수명() 으로 호출
