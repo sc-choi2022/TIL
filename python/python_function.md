@@ -297,7 +297,11 @@ def func2(*x):
     for i in x:
     	print(type(x))
 func2(a)        
-       
+
+1
+2
+3
+<class 'tuple'>
 ```
 
 
@@ -310,11 +314,15 @@ Argument들은 딕셔너리로 묶여 처리되며, parameter에 **를 붙여 �
 
 ```python
 def family(**kwargs):
-    for key, value in kwargs:
+    for key, value in kwargs.items():
         print(key, ":", value)
         
-family(father = 'John',mother = 'Jane', me = 'John Jr.')
+family(father = 'John', mother = 'Jane', me = 'John Jr.')
 # father, mother은 dictionary를 정의하겠다는 것이 아닌 이름과 값을 묶어서 주겠다는 것
+
+father : John
+mother : Jane
+me : John Jr.
 ```
 
 
