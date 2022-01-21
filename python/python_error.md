@@ -267,3 +267,6 @@ NameError: name 'a' is not defined
 
 # SyntaxError
 
+```python
+```
+
