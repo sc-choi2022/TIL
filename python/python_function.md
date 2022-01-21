@@ -1,3 +1,27 @@
+### 함수
+
+Decomposition
+
+Abstraction
+
+기능하는 코드 조각
+
+필요시에만 호출하여 간편히 사용
+
+
+
+#### Cumstom Function
+
+구현되어 있는 함수가 없는 경우, 사용자가 직접 함수를 작성 가능
+
+```python
+def function_nume(parameter):
+    # code block
+    return ruturning_Value
+```
+
+
+
 ### 함수를 사용해야 하는 이유
 
 Built-in Function : 내장함수
@@ -68,7 +92,7 @@ add(2,3)
 
 **Value returning function**
 
-: 함수 실행 후, return 문을 통해 값을 반환하고 함수 종료 ???
+: 함수 실행 후, return 문을 통해 값을 반환하고 함수 종료
 
 ```python
 a = print('hello')
@@ -82,9 +106,9 @@ None 3.5
 
 
 
+**두 개 이상의 값 반환**
 
-
-두 개 이상의 값 반환
+반환 값으로 tuple 사용
 
 ```python
 def minus_and_product(x, y):
@@ -107,7 +131,7 @@ print(minus_and_product(4, 5))
 
 
 
-값 반환 외의 return문의 용도
+**값 반환 외의 return문의 용도**
 
 ​	return을 하게 되면, 값 반환 후에 함수가 바로 종료된다.
 
@@ -137,7 +161,19 @@ def value_returning_product(x, y):
 value_returning_product(4, 5)
 ans = value_returning_product(4, 5)
 print(ans)
+
+4 x 5 = 20
+4 x 5 = 20
+None
+20
 ```
+
+
+
+return
+
+- return x - None
+- return o - 하나의 object를 반환
 
 
 
@@ -145,15 +181,17 @@ print(ans)
 
 ##### Parameter와 Argument
 
-Parameter : 함수를 실행할 때, 함수 내부에서 사용되는 식별자 ???
+Parameter : 함수를 실행할 때, 함수 내부에서 사용되는 식별자
 
-Argument :  함수를 호출할 때, 넣어주는 값 ???
+Argument :  함수를 호출할 때, 넣어주는 값
 
 ```python
-def say_anything(anything): # parameter = anything
+def say_anything(anything): # parameter = anything 이름
     print(f'hello {anything}')
 
-say_anything('python') # argument : 'python'
+say_anything('python') # argument : 'python' 값
+
+hello python
 ```
 
 
@@ -182,7 +220,7 @@ add(2, 3) # x = 2, y = 3
 
 
 
-**Keyword Arguments**
+**Keyword Arguments** (호출)
 
 직접 변수의 이름으로 특정 Argument를 전달할 수 있음
 
@@ -196,11 +234,16 @@ add(x = 2, y = 5) # x = 2, y = 5
 add(2, y = 5) # x = 2, y = 5
 add(x = 2, 5) # x = 2, y = 5 
 			  # SyntaxError :positional argument follows keyword argument
+    
+  Input In [5]
+    add(x = 2, 5) # x = 2, y = 5
+                ^
+SyntaxError: positional argument follows keyword argument
 ```
 
 
 
-**Default Arguments Value**
+**Default Arguments Value** (정의)
 
 기본값을 지정하여 함수 호출 시 argument값을 설정하지 않도록 함
 
@@ -234,6 +277,12 @@ def add(*args):
         
 add(2)
 add(2, 3, 4, 5)
+
+2
+2
+3
+4
+5
 ```
 
 ```python
@@ -264,7 +313,8 @@ def family(**kwargs):
     for key, value in kwargs:
         print(key, ":", value)
         
-family(father = 'John',mother = 'Jane', me = 'John Jr.')        
+family(father = 'John',mother = 'Jane', me = 'John Jr.')
+# father, mother은 dictionary를 정의하겠다는 것이 아닌 이름과 값을 묶어서 주겠다는 것
 ```
 
 
@@ -273,7 +323,14 @@ family(father = 'John',mother = 'Jane', me = 'John Jr.')
 
 ```python
 def greeting(name = 'john deo', age):
-    ???
+
+#기본 argument 값을 가지는 argument다음에 기본 값이 없는 argument로 정의할 수 없음
+#SyntaxError: non-default argument follows default argument
+
+add(x=3, 5)
+
+#keyword argument 다음에 positional argument를 활용할 수는 없음
+#SyntaxError: positional argument follows keyword argument
 ```
 
 
@@ -308,11 +365,11 @@ built-in scope
 
 global scope
 
-: 모듈이 호출된 시점 이후 혹은 인터프리터가 끝날 때까지 유지
+: 모듈이 호출된 시점 이후 혹은 인터프리터(.py)가 끝날 때까지 유지
 
 local scope
 
-: 함수가 호출될 때 생성되고, 함수가 종료될 때까지 유지
+: 함수가 호출될 때 생성되고, 함수가 종료될 때까지 유지(return이 될때까지)
 
 ```python
 def func():
@@ -323,6 +380,16 @@ func()
 print('global',a)
 
 # a는 local scope에서만 존재
+
+local 20
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Input In [1], in <module>
+      5     print('local',a)
+      7 func()
+----> 8 print('global',a)
+
+NameError: name 'a' is not defined
 ```
 
 
@@ -390,7 +457,6 @@ def fun1():
 print(a)
 func1()
 print(a)
-
 
 ```
 

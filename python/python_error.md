@@ -243,7 +243,24 @@ KeyError: 3
 # NameError
 
 ```python
+def func():
+    a = 20
+    print('local',a)
 
+func()
+print('global',a)
+
+# a는 local scope에서만 존재
+
+local 20
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Input In [1], in <module>
+      5     print('local',a)
+      7 func()
+----> 8 print('global',a)
+
+NameError: name 'a' is not defined
 ```
 
 
