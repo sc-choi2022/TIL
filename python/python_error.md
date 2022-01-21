@@ -218,9 +218,6 @@ Input In [1], in <module>
 IndexError: string index out of range
 ```
 
-```python
-```
-
 
 
 # KeyError
