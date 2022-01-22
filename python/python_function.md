@@ -295,12 +295,14 @@ func1(a)
 
 def func2(*x):
     for i in x:
+        print(i)
     	print(type(x))
 func2(a)        
 
 1
 2
 3
+[1, 2, 3]
 <class 'tuple'>
 ```
 
@@ -361,8 +363,6 @@ variable
 
 
 
-??? 실습에서의 정리!
-
 **life scope**
 
 변수는 각자의 life scope(변수 수명주기)가 존재
@@ -413,7 +413,7 @@ NameError: name 'a' is not defined
 * Global scope : 함수 밖의 변수, Import 모듈
 * Bulit-in scope : 파이썬 안에 내장되어 있는 함수 또는 속성
 
-즉, 함수 내에서는 바깥 Scope의 변수에 접근 가능하나 수정은 할 수 없음
+즉, 함수 내에서는 바깥 Scope의 변수에 접근 가능하나 <u>수정은 할 수 없음</u>
 
 
 
@@ -424,14 +424,18 @@ a = 0
 b = 1
 def enclosed():
     a = 10
-    b = 3
+    c = 3
     def local(c):
         print(a, b, c)
-	local(300)
+    local(300)
     print(a, b, c)
     
 enclosed()
 print(a, b)
+
+10 1 300
+10 1 3
+0 1
 ```
 
 
@@ -444,11 +448,25 @@ print(sum(range(2)))
 sum = 5
 print(sum)
 print(sum(range(2)))
+
+<built-in function sum>
+1
+5
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Input In [8], in <module>
+      7 sum = 5
+      8 print(sum)
+----> 9 print(sum(range(2)))
+
+TypeError: 'int' object is not callable
 ```
 
 
 
-##### global문 ???global부분의 영상 확인
+##### global문
+
+밖에 있는 변수를 black box안에서 조작하고 싶다. global keyword를 이용하여 사용할 수 있다.
 
 현재 코드 블록 전체에 적용되며, 나열된 식별자(Identifiers, 이름)이 global variable임을 나타냄
 
@@ -458,7 +476,7 @@ print(sum(range(2)))
 ```python
 # 함수 내부에서 글로벌 변수 변경하기
 a = 10
-def fun1():
+def func1():
     global a
     a = 3		# local scope에서 global 변수 값의 변경
     			# global키워드를 사용하지 않으면, local scope에 a 변수가 생성됨
@@ -466,11 +484,15 @@ print(a)
 func1()
 print(a)
 
+10
+3
 ```
 
 
 
 global 변수 사용 제한 예시
+
+global 변수를 사용할 때는 반드시 가장 상단에 사용하기 전에 선언해주어야한다.
 
 ```python
 a = 10
@@ -491,6 +513,12 @@ def func2(a):
 print(a)
 func1(3)
 print(a)
+
+Input In [12]
+    global a
+    ^
+SyntaxError: name 'a' is used prior to global declaration
+
 ```
 
 
@@ -510,13 +538,16 @@ x = 0
 def func1():
     x = 1
     def func2():
-        nonlocal x	
+        nonlocal x
         x = 2
     func2()
     print(x)
     
 func1()
-print(X)
+print(x)
+
+2
+0
 ```
 
 
@@ -532,6 +563,8 @@ def func1():
 func1()
 print(out)
 
+3
+
 def func2():
     def func3():
         nonlocal y	# global과 다르게 없는 nonlocal y을 만들 수 없다.
@@ -540,7 +573,30 @@ def func2():
     print(y)
     
 func2()
+
+Input In [16]
+    nonlocal y	# global과 다르게 없는 nonlocal y을 만들 수 없다.
+    ^
+SyntaxError: no binding for nonlocal 'y' found
 ```
+
+
+
+##### 주의
+
+<u>기본적으로 함수에서 선언된 변수는 Local scope에 생성되며, 함수 종료 시 사라짐</u>
+
+<u>해당 scope에 변수가 없는 경우 LEGB rule에 의해 이름을 검색함</u>
+
+* 변수에 접근은 가능하지만, 해당 변수를 수정할 수는 없음
+* 값을 할당하는 경우 해당 scope의 이름공간에 새롭게 생성되기 때문
+* **단, 함수 내에서 필요한 상위 scope 변수는 argument로 넘겨서 활용할 것 (클로져\*제외)**
+  * 클로저랸? 어떤 함수 내부에 중첩된 형태로써 외부 scope 변수에 접근 가능한 함수
+
+상위 scope에 있는 변수를 수정하고 싶다면 <u>global, nonlocal</u> 키워드를 활용가능
+
+* 단, 코드가 복잡해지면서 변수의 변경을 추적하기 어렵고, 예기치 못한 오류가 발생
+* 가습적 사용하지 않는 것을 권장하며, **함수로 값을 바꾸고자 한다면 항상 argument로 넘기고 리턴값을 사용하는 것을 추천**
 
 
 
@@ -550,7 +606,7 @@ globals()와 locals()
 
 namespace(global, local, builtin)을 dictionary로 정리
 
-* globals() : global, local, builtin 정보 모두 dict 형태로 정리
+* globals() : global, local, builtin 정보 모두 <u>dict</u> 형태로 정리
 * locals() : locals()가 실행되어지는 함수 내의 local namespace들을 정리
 
 ```python
@@ -564,12 +620,9 @@ locals_test()
 
 e_var = globals()
 print(e_var)
-```
 
-
-
-```python
-우리반 실습에서 사용예시, 디버깅대신
+{'b_var': 3, 'c_var': 'hi'}
+{'__name__': '__main__', '__doc__': 'Automatically created module for IPython interactive environment', '__package__': None, '__loader__': None, '__spec__': None, '__builtin__': <module 'builtins' (built-in)>, '__builtins__': <module 'builtins' (built-in)>, '_ih': ['', "# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\ndef greeting(name = 'john deo', age):", '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\nadd(x=3, 5)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n\tlocal(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    c = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\nprint(sum)\nprint(sum(range(2)))\nsum = 5\nprint(sum)\nprint(sum(range(2)))', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef fun1():\n    global a\n    a = 3\t\t# local scope에서 global 변수 값의 변경\n    \t\t\t# global키워드를 사용하지 않으면, local scope에 a 변수가 생성됨\nprint(a)\nfunc1()\nprint(a)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef func1():\n    global a\n    a = 3\t\t# local scope에서 global 변수 값의 변경\n    \t\t\t# global키워드를 사용하지 않으면, local scope에 a 변수가 생성됨\nprint(a)\nfunc1()\nprint(a)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef func1():\n    print(a)\t# 반드시 a를 사용하기 전에 global a\n    global a\n    a = 3\n    \nprint(a)\nfunc1()\nprint(a)\n\na = 10\ndef func2(a):\n    global a\n    a = 3\n    \nprint(a)\nfunc1(3)\nprint(a)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\nx = 0\ndef func1():\n    x = 1\n    def func2():\n        nonlocal x\t\n        x = 2\n    func2()\n    print(x)\n    \nfunc1()\nprint(X)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\nx = 0\ndef func1():\n    x = 1\n    def func2():\n        nonlocal x\n        x = 2\n    func2()\n    print(x)\n    \nfunc1()\nprint(x)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\ndef func1():\n    global out\t\t# global는 없는 global out을 만들 수 있다.\n    out = 3\n    \nfunc1()\nprint(out)\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n\tfunc3()        \n    print(y)\n    \nfunc2()', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\ndef func1():\n    global out\t\t# global는 없는 global out을 만들 수 있다.\n    out = 3\n    \nfunc1()\nprint(out)\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n    func3()        \n    print(y)\n    \nfunc2()', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n    func3()        \n    print(y)\n    \nfunc2()', "# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\n\na_var = range(2)\ndef locals_test():\n    b_var = 3\n    c_var = 'hi'\n    d_var = locals()\n    print(d_var)\nlocals_test()\n\ne_var = globals()\nprint(e_var)"], '_oh': {}, '_dh': [WindowsPath('C:/Users/choiy/Desktop/ssafy7/handsout_MINE/0119/실습자료')], 'In': ['', "# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\ndef greeting(name = 'john deo', age):", '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\nadd(x=3, 5)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n\tlocal(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    c = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\nprint(sum)\nprint(sum(range(2)))\nsum = 5\nprint(sum)\nprint(sum(range(2)))', '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef fun1():\n    global a\n    a = 3\t\t# local scope에서 global 변수 값의 변경\n    \t\t\t# global키워드를 사용하지 않으면, local scope에 a 변수가 생성됨\nprint(a)\nfunc1()\nprint(a)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef func1():\n    global a\n    a = 3\t\t# local scope에서 global 변수 값의 변경\n    \t\t\t# global키워드를 사용하지 않으면, local scope에 a 변수가 생성됨\nprint(a)\nfunc1()\nprint(a)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef func1():\n    print(a)\t# 반드시 a를 사용하기 전에 global a\n    global a\n    a = 3\n    \nprint(a)\nfunc1()\nprint(a)\n\na = 10\ndef func2(a):\n    global a\n    a = 3\n    \nprint(a)\nfunc1(3)\nprint(a)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\nx = 0\ndef func1():\n    x = 1\n    def func2():\n        nonlocal x\t\n        x = 2\n    func2()\n    print(x)\n    \nfunc1()\nprint(X)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\nx = 0\ndef func1():\n    x = 1\n    def func2():\n        nonlocal x\n        x = 2\n    func2()\n    print(x)\n    \nfunc1()\nprint(x)', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\ndef func1():\n    global out\t\t# global는 없는 global out을 만들 수 있다.\n    out = 3\n    \nfunc1()\nprint(out)\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n\tfunc3()        \n    print(y)\n    \nfunc2()', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\ndef func1():\n    global out\t\t# global는 없는 global out을 만들 수 있다.\n    out = 3\n    \nfunc1()\nprint(out)\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n    func3()        \n    print(y)\n    \nfunc2()', '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n    func3()        \n    print(y)\n    \nfunc2()', "# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\n\na_var = range(2)\ndef locals_test():\n    b_var = 3\n    c_var = 'hi'\n    d_var = locals()\n    print(d_var)\nlocals_test()\n\ne_var = globals()\nprint(e_var)"], 'Out': {}, 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x000002644CE8B2B0>>, 'exit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002644CE34640>, 'quit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002644CE34640>, '_': '', '__': '', '___': '', '_i': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n    func3()        \n    print(y)\n    \nfunc2()', '_ii': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\ndef func1():\n    global out\t\t# global는 없는 global out을 만들 수 있다.\n    out = 3\n    \nfunc1()\nprint(out)\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n    func3()        \n    print(y)\n    \nfunc2()', '_iii': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\ndef func1():\n    global out\t\t# global는 없는 global out을 만들 수 있다.\n    out = 3\n    \nfunc1()\nprint(out)\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n\tfunc3()        \n    print(y)\n    \nfunc2()', '_i1': "# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\ndef greeting(name = 'john deo', age):", '_i2': '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\nadd(x=3, 5)', '_i3': '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n\tlocal(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '_i4': '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', 'a': 10, 'b': 1, 'enclosed': <function enclosed at 0x000002644CF043A0>, '_i5': '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '_i6': '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    b = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '_i7': '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\na = 0\nb = 1\ndef enclosed():\n    a = 10\n    c = 3\n    def local(c):\n        print(a, b, c)\n    local(300)\n    print(a, b, c)\n    \nenclosed()\nprint(a, b)', '_i8': '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.\n\nprint(sum)\nprint(sum(range(2)))\nsum = 5\nprint(sum)\nprint(sum(range(2)))', 'sum': 5, '_i9': '# check.py 파일에 짝수, 홀수를 판별하는 함수를 작성해봅시다.\n# 1. n을 매개변수로 받아 홀수인지를 판단하는 odd 함수를 작성해 주세요.\n# 2. return은 n이 홀수라면 True를, 아니라면 False를 return 합니다.', '_i10': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef fun1():\n    global a\n    a = 3\t\t# local scope에서 global 변수 값의 변경\n    \t\t\t# global키워드를 사용하지 않으면, local scope에 a 변수가 생성됨\nprint(a)\nfunc1()\nprint(a)', 'fun1': <function fun1 at 0x000002644CE69550>, '_i11': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef func1():\n    global a\n    a = 3\t\t# local scope에서 global 변수 값의 변경\n    \t\t\t# global키워드를 사용하지 않으면, local scope에 a 변수가 생성됨\nprint(a)\nfunc1()\nprint(a)', 'func1': <function func1 at 0x000002644EA523A0>, '_i12': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\na = 10\ndef func1():\n    print(a)\t# 반드시 a를 사용하기 전에 global a\n    global a\n    a = 3\n    \nprint(a)\nfunc1()\nprint(a)\n\na = 10\ndef func2(a):\n    global a\n    a = 3\n    \nprint(a)\nfunc1(3)\nprint(a)', '_i13': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\nx = 0\ndef func1():\n    x = 1\n    def func2():\n        nonlocal x\t\n        x = 2\n    func2()\n    print(x)\n    \nfunc1()\nprint(X)', 'x': 0, '_i14': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\nx = 0\ndef func1():\n    x = 1\n    def func2():\n        nonlocal x\n        x = 2\n    func2()\n    print(x)\n    \nfunc1()\nprint(x)', '_i15': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\ndef func1():\n    global out\t\t# global는 없는 global out을 만들 수 있다.\n    out = 3\n    \nfunc1()\nprint(out)\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n\tfunc3()        \n    print(y)\n    \nfunc2()', '_i16': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\ndef func1():\n    global out\t\t# global는 없는 global out을 만들 수 있다.\n    out = 3\n    \nfunc1()\nprint(out)\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n    func3()        \n    print(y)\n    \nfunc2()', 'out': 3, '_i17': '# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\n\ndef func2():\n    def func3():\n        nonlocal y\t# global과 다르게 없는 nonlocal y을 만들 수 없다.\n        y = 2\n    func3()        \n    print(y)\n    \nfunc2()', '_i18': "# 3. n을 매개변수로 받아 짝수인지를 판단하는 even 함수를 작성해 주세요.\n# 4. return은 n이 짝수라면 True를, 아니라면 False를 return 합니다.\n\n\na_var = range(2)\ndef locals_test():\n    b_var = 3\n    c_var = 'hi'\n    d_var = locals()\n    print(d_var)\nlocals_test()\n\ne_var = globals()\nprint(e_var)", 'a_var': range(0, 2), 'locals_test': <function locals_test at 0x000002644EA52670>, 'e_var': {...}}
 ```
 
 
@@ -592,12 +645,31 @@ def foo():
 foo.__doc__    
 ```
 
-
-
-: 함수나 클래스의 설명
-
 ```python
-우리반 수업
+print(print.__doc__)
+
+print(value, ..., sep=' ', end='\n', file=sys.stdout, flush=False)
+
+Prints the values to a stream, or to sys.stdout by default.
+Optional keyword arguments:
+file:  a file-like object (stream); defaults to the current sys.stdout.
+sep:   string inserted between values, default a space.
+end:   string appended after the last value, default a newline.
+flush: whether to forcibly flush the stream.
+    
+help(print)
+
+Help on built-in function print in module builtins:
+
+print(...)
+    print(value, ..., sep=' ', end='\n', file=sys.stdout, flush=False)
+    
+    Prints the values to a stream, or to sys.stdout by default.
+    Optional keyword arguments:
+    file:  a file-like object (stream); defaults to the current sys.stdout.
+    sep:   string inserted between values, default a space.
+    end:   string appended after the last value, default a newline.
+    flush: whether to forcibly flush the stream.
 ```
 
 
@@ -606,7 +678,7 @@ foo.__doc__
 
 좋은 함수와 parameter 이름 짓는 방법
 
-* 상수 이름은 영문 전체를 대문자
+* 상수 이름은 영문 전체를 대문자 (예) PI = 3.141592)
 * 클래스 및 예외의 이름은 각 단어의 첫 글자만 영문 대문자
 * 이외 나머지는 소문자 또는 밑줄로 구분한 소문자 사용 > 함수
 
@@ -618,6 +690,12 @@ foo.__doc__
 약어 사용을 지양
 
 * 보편적으로 사용하는 약어를 제외하고 가급적 약어 사용을 지양
+
+```python
+how_are_you_doing	# snake case
+HowAreYou			# pascal case
+howAreYou			# camel case
+```
 
 
 
@@ -635,21 +713,42 @@ map(function, iterable) function: 사용하고 싶은 함수의 이름
 
 :순회 가능한 데이터구조(iterable)의 모든 요소에 함수(function)를 적용하고, 그 결과를 map object로 반환
 
+<u>function : 각 요소에 적용하고 싶은 함수 이름</u>
+
 ```python
 numbers = [1, 2, 3]
 result = map(str, numbers)
 print(result, type(result))
 
+<map object at 0x000002644D024D60> <class 'map'>
+#enumerate에서 본 적 있다. 많은 것들을 하나씩 꺼낼 수 있게 담은 통
 list(result)
+
+['1', '2', '3']	#list 형변환을 통해 결과 직접 확인
 ```
 
 
 
-```python
-n, m = map(int, input().split())
+<u>map(str,input().split())</u> 와 <u>list(map(int,input().split()))</u> 정말 많이 사용
 
-print(n, m)
-print(type(n),type(m))
+```python
+def add x:
+    a, b = x
+    return a + b
+
+a = list(map(add,[[1, 2],[3, 4]]))
+print(a)
+
+[3, 7]
+```
+
+예: input 값들을 숫자로 바로 활용하고 싶을 때
+
+```python
+n, m = map(int, input().split())	# 20 20
+
+print(n, m)		# 20 20
+print(type(n),type(m))	# <class 'int '> <class 'int'>
 ```
 
 
@@ -662,9 +761,9 @@ filter(function, iterable)
 
 ```python
 def odd(n):
-    return n%2		# True/False 를 반환하여 True가 있는 것만 반환
+    return n%2					# True/False 를 반환 
 numbers = [1, 2, 3]
-result = filter(odd, numbers)
+result = filter(odd, numbers)	# True가 있는 것만 반환
 print(result, type(result))
 
 list(result)
@@ -676,7 +775,7 @@ list(result)
 
 zip(*iterables)
 
-: 복수의 iterable을 모아 튜플을 원소로 하는 zip object를 반환
+: 복수의 iterable을 모아 **tuple**을 원소로 하는 zip object를 반환
 
 ```python
 girls = ['jane', 'ashley']
@@ -684,16 +783,87 @@ boys = ['justin', 'eric']
 pair = zip(girls, boys)
 print(pair, type(pair))
 
+<zip object at 0x000002644EAB45C0> <class 'zip'>
+
 list(pair)
+[('jane', 'justin'), ('ashley', 'eric')]
 ```
 
-만약 하나의 list가 길다면 짧은 것을 기준으로 zip이 진행된다.??
 
-1/19 3개의 실습
 
 ```python
-반시계 = 
-시계 =
+a = ['a', 'b', 'c']
+b = [1, 2, 3]
+print(list(zip(a, b)))
+
+[('a', 1), ('b', 2), ('c', 3)]
+```
+
+```python
+a = ['a', 'b', 'c']
+b = [1, 2, 3]
+c = ['x', 'y', 'z']
+print(list(zip(a, b, c)))
+
+[('a', 1, 'x'), ('b', 2, 'y'), ('c', 3, 'z')]
+```
+
+
+
+만약 하나의 list가 길다면 짧은 것을 기준으로 zip이 진행된다.
+
+```python
+a = ['a', 'b', 'c']
+b = [1, 2, 3, 4, 5]
+print(list(zip(a, b)))
+
+[('a', 1), ('b', 2), ('c', 3)]
+```
+
+
+
+```python
+from pprint import pprint
+a = [[1, 2, 3, 4, 5]]*5
+pprint(a)
+print()
+
+b = list(zip(*a))
+pprint(b)
+print()
+
+c = list(zip(*a))[::-1]
+pprint(c)
+print()
+
+d = list(zip(*a[::-1]))
+pprint(d)
+print()
+
+[[1, 2, 3, 4, 5],
+ [1, 2, 3, 4, 5],
+ [1, 2, 3, 4, 5],
+ [1, 2, 3, 4, 5],
+ [1, 2, 3, 4, 5]]
+
+[(1, 1, 1, 1, 1),		# transpose
+ (2, 2, 2, 2, 2),		
+ (3, 3, 3, 3, 3),
+ (4, 4, 4, 4, 4),
+ (5, 5, 5, 5, 5)]
+
+[(5, 5, 5, 5, 5),		# 반시계 방향
+ (4, 4, 4, 4, 4),
+ (3, 3, 3, 3, 3),
+ (2, 2, 2, 2, 2),
+ (1, 1, 1, 1, 1)]
+
+[(1, 1, 1, 1, 1),		# 시계 방향
+ (2, 2, 2, 2, 2),
+ (3, 3, 3, 3, 3),
+ (4, 4, 4, 4, 4),
+ (5, 5, 5, 5, 5)]
+
 ```
 
 
@@ -702,7 +872,7 @@ list(pair)
 
 lambda [parameter] : 표현식
 
-: 표현식을 계산한 결과값을 반환하는 함수로, 이름이 없는 함수여서 익명함수라고도 불림
+: 표현식을 계산한 결과값을 반환하는 함수로, 이름이 없는 함수여서 <u>익명함수</u>라고도 불림
 
 특징 :
 
@@ -725,20 +895,44 @@ triangle_area = lambda b, h : 0.5 * b * h
 triangle_area(5, 6)
 ```
 
+```python
+func = lambda x : x+1
+print(func(1))
+
+2
+```
+
+
+
+**filter와 lambda**
+
+```python
+def odd(n):
+    return n % 2
+
+print(list(filter(odd, range(5))))
+
+[1, 3]
+
+print(list(filter(lambda n: n%2, range(5))))
+
+[1, 3]
+```
+
 
 
 ##### recursive function
 
 재귀함수
 
-: 자기 자신을 호출하는 함수
+: <u>자기 자신을 호출하는 함수</u>
 
 무한한 호출을 목표로 하는 것이 아니며, 알고리즘 설계 및 구현에서 유용하게 활용
 
-* 알고리즘 중 재귀 함수로 로직을 표현하기 쉬운 경우가 있음(e.g) 점화식)
+* 알고리즘 중 재귀 함수로 로직을 표현하기 쉬운 경우가 있음(e.g) 점화식))
 * 변수의 사용이 줄어들며, 코드의 가독성이 높아짐
 
-1개 이상의 base case(종료되는 상황)가 존재하고, 수렴하도록 작성
+<u>1개 이상의 base case(종료되는 상황)가 존재하고, 수렴하도록 작성</u>
 
 ```python
 # Factorial n!
@@ -747,34 +941,35 @@ def factorial(n):
     if n == 0 or n == 1:
         return 1
     else:
-        retun n * factorial(n-1)        
+        return n * factorial(n-1)        
 factorial(4)        
 
-# for
+# for문으로도 작성가능
 def fact(n):
     result = 1
     while n > 1:
         result *= n
         n -= 1
-    return result        
+    return result     
+fact(4)
 ```
 
 
 
 <u>재귀 함수의 주의 사항</u>
 
-재귀 함수는 base case에 도달할 때까지 함수를 호출함
+재귀 함수는 <u>base case</u>에 도달할 때까지 함수를 호출함
 
 메모리 스택이 넘치게 되면(stack overflow) 프로그램이 동작하지 않게 됨
 
-파이썬에서는 최대 재귀 깊이(maximum recursion depth)가 1,000번으로, 호출 횟수가 이를 넘어가게 되면 Recursion Error 발생
+파이썬에서는 <u>최대 재귀 깊이</u>(maximum recursion depth)가 1,000번으로, 호출 횟수가 이를 넘어가게 되면 Recursion Error 발생
 
 
 
 **반복문과 재귀 함수 비교**
 
-알고리즘 자체가 재귀적인 표현이 자연스러운 경우 재귀 함수를 사용함
+알고리즘 자체가 <u>재귀적인 표현</u>이 자연스러운 경우 재귀 함수를 사용함
 
-재귀 호출은 변수 사용을 줄여줄 수 있음
+재귀 호출은 <u>변수 사용을 줄여줄 수 있음</u>
 
-재귀 호출은 입력 값이 커질 수록 연산 속도가 오래 걸림
+재귀 호출은 <u>입력 값이 커질 수록 연산 속도가 오래 걸림</u>

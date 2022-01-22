@@ -142,6 +142,26 @@ Input In [165], in <module>
 TypeError: unsupported operand type(s) for *: 'range' and 'int'
 ```
 
+```python
+print(sum)
+print(sum(range(2)))
+sum = 5
+print(sum)
+print(sum(range(2)))
+
+<built-in function sum>
+1
+5
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Input In [8], in <module>
+      7 sum = 5
+      8 print(sum)
+----> 9 print(sum(range(2)))
+
+TypeError: 'int' object is not callable
+```
+
 
 
 # ValueError
@@ -265,5 +285,63 @@ NameError: name 'a' is not defined
 # SyntaxError
 
 ```python
+def greeting(name = 'john deo', age):
+
+    Input In [1]
+    def greeting(name = 'john deo', age):
+                                       ^
+SyntaxError: non-default argument follows default argument
+```
+
+```python
+add(x=3, 5)
+
+  Input In [2]
+    add(x=3, 5)
+              ^
+SyntaxError: positional argument follows keyword argument
+```
+
+```python
+a = 10
+def func1():
+    print(a)	# 반드시 a를 사용하기 전에 global a
+    global a
+    a = 3
+    
+print(a)
+func1()
+print(a)
+
+a = 10
+def func2(a):
+    global a
+    a = 3
+    
+print(a)
+func1(3)
+print(a)
+
+Input In [12]
+    global a
+    ^
+SyntaxError: name 'a' is used prior to global declaration
+
+```
+
+```python
+def func2():
+    def func3():
+        nonlocal y	# global과 다르게 없는 nonlocal y을 만들 수 없다.
+        y = 2
+	func3()        
+    print(y)
+    
+func2()
+
+Input In [16]
+    nonlocal y	# global과 다르게 없는 nonlocal y을 만들 수 없다.
+    ^
+SyntaxError: no binding for nonlocal 'y' found
 ```
 
