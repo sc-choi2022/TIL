@@ -170,7 +170,14 @@ odd(5)
 even(4)
 
 True
-# NameError
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Input In [2], in <module>
+      3 from check import odd	# 위 check.py 사용
+      4 odd(5)
+----> 5 even(4)
+
+NameError: name 'even' is not defined
 ```
 
 ```python

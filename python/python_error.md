@@ -255,6 +255,21 @@ Input In [40], in <module>
 KeyError: 3
 ```
 
+```python
+my_dict = {'apple':'사과', 'banana':'바나나'}
+data = my_dict.pop('pineapple')
+print(data, my_dict)
+
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+Input In [62], in <module>
+      1 my_dict = {'apple':'사과', 'banana':'바나나'}
+----> 2 data = my_dict.pop('pineapple')
+      3 print(data, my_dict)
+
+KeyError: 'pineapple'
+```
+
 
 
 # NameError
@@ -278,6 +293,20 @@ Input In [1], in <module>
 ----> 8 print('global',a)
 
 NameError: name 'a' is not defined
+```
+
+```python
+from check import odd	# check.py 사용
+even(4)
+
+True
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Input In [2], in <module>
+      3 from check import odd
+----> 4 even(4)
+
+NameError: name 'even' is not defined
 ```
 
 
