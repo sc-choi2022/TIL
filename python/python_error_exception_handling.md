@@ -495,7 +495,9 @@ Input In [24], in <module>
 ZeroDivisionError: division by zero        
 ```
 
-순차적으로 수행됨으로, 가장 작은 범주부터 예외 처리를 해야함
+
+
+<u>**에러가 순차적으로 수행됨으로, 가장 작은 범주부터 예외 처리를 해야함**</u>
 
 ```python
 try:
@@ -628,6 +630,21 @@ Input In [30], in <module>
 ValueError: 값 에러 발생
 ```
 
+```python
+try:
+    raise ValueError('hi')
+except ValueError as err:
+    print(err)
+else:
+    pass
+finally:
+    pass
+    
+hi
+```
+
+
+
 
 
 #### assert 
@@ -643,8 +660,15 @@ assert<표현식>,<메시지>
 <u>: False인 경우 Assertion Error</u>
 
 ```python
-assert len([1,2]) == 1, '길이가 1이 아닙니다.'
+assert len([1]) == 1, '길이가 1이 아닙니다.'
 
+# 오류 발생하지 않음
+```
+
+
+
+```python
+assert len([1,2]) == 1, '길이가 1이 아닙니다.'
 ---------------------------------------------------------------------------
 AssertionError                            Traceback (most recent call last)
 Input In [31], in <module>
@@ -656,6 +680,8 @@ AssertionError: 길이가 1이 아닙니다.
 
 
 Python 실행
+
+##### raise vs assert
 
 raise : 실제 프로덕션 코드에서 활용
 
