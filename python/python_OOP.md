@@ -515,12 +515,19 @@ print(c2.pi)
 호출 시, 첫번째 인자로 클래스(cls)가 전달됨
 
 ```python
-class Myclass:		# 클래스 이름 : pascal_case
-    
+class MyClass:				# 클래스 이름 : pascal_case
+    var = 'Class 변수'
     @classmethod
-    def class_method(cls, arg1, ...):	# 함수 이름 : snake_case
+    def class_method(cls):	# 함수 이름 : snake_case
+        print(cls.var)
+        return cls
+    
+MyClass.class_method()
+MyClass
 
-MyClass.class_method(...)        
+Class 변수
+__main__.MyClass
+__main__.MyClass
 ```
 
 
@@ -539,14 +546,16 @@ MyClass.class_method(...)
 
 @staticmethod 데코레이터를 사용하여 정의
 
-호출 시, 어떠한 인자도 전달되지 않음(클래스 정보에 접근/수정 불가)
+호출 시, **어떠한 인자도 전달되지 않음(클래스 정보에 접근/수정 불가)**
 
 ```python
 class MyClass:
     @staticmethod
-    def class_method(arg1, ...):
-        
-MyClass.static_method(...)        
+    def static_method():
+        return 'static'        
+MyClass.static_method() 
+
+'static'
 ```
 
 
@@ -555,7 +564,7 @@ MyClass.static_method(...)
 class MyClass:
     
     # 함수는 기본적으로 local scope
-    # 내부에서 확용하고 싶으면 parameter로 받도록 정의
+    # 내부에서 활용하고 싶으면 parameter로 받도록 정의
     
     # instance method : instance를 조작하고 싶다.
     # (python 제작자) 함수 내부에 instance를 던져주도록 설계
