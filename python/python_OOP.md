@@ -286,7 +286,7 @@ True True
 
 
 
-생성자 메소드에서 self.\<name>으로 정의
+생성자 메소드(__init__에서 self.\<name>으로 정의
 
 인스턴스가 생성된 이후 \<instance>.\<name>으로 접근 및 할당
 
@@ -313,6 +313,8 @@ print(john.name)
 클래스 내부에 정의되는 메소드의 기본
 
 호출 시, 첫번째 인자로 <u>인스턴스 자기자신(self)이 전달됨</u>
+
+\* Method는 class에 묶여있어 class만 사용할 수 있는 함수
 
 ```python
 class MyClass:
@@ -501,6 +503,14 @@ print(c2.pi)
 3.14
 3.14
 ```
+
+
+
+### 인스턴스 메소드
+
+self 매개변수를 통해 동일한 객체에 정의된 속성 및 다른 메소드에 자유롭게 접근 가능
+
+클래스자체에도 접근 가능 → <u>인스턴스 메소드가 클래스 상태를 수정</u>할 수도 있음
 
 
 
@@ -742,8 +752,6 @@ class Professor:
         self.age += 1
 ```
 
-
-
 ```python
 class Person:
     
@@ -774,7 +782,7 @@ class ChildClass(ParentClass):
 
 하위 클래스는 상위 클래스에 정의된 속성, 행동, 관계 및 제약 조건을 모두 상속 받음
 
-부모클래스의 속서, 메소드가 자식 클래스에 상속되므로, 코드 재사용성이 높아짐
+부모클래스의 속성, 메소드가 자식 클래스에 상속되므로, 코드 재사용성이 높아짐
 
 ```python
 class Person:    
@@ -796,15 +804,20 @@ class Student(Person):
         self.name = name
         self.age = age
         self.gpa = gpa
+    def talk(self):
+        print(f'{self.name}입니다. 교수님 ^^7')
         
 p1 = Professor('박교수', 50, '컴퓨터공학과')
-s2 = Student('김학생', 20, 3.5)
+s1 = Student('김학생', 20, 3.5)
 
 # 부모 Person 클래스의 talk 메서드를 활용
 p1.talk()
 
 # 부모 Person 클래스의 talk 메서드를 표현한다.
 s1.talk()
+
+반갑습니다. 박교수입니다.
+김학생입니다. 교수님 ^^7
 ```
 
 
@@ -879,10 +892,12 @@ True
 * classinfo는 클래스 객체의 튜플일 수 있으며, classinfo의 모든 항목을 검사
 
 ```python
-issubclass(bool, int)
-issubclass(float, int)
-issubclass(Professor, Person)
-issubclass(Professor, (Person, Student))
+print(issubclass(bool, int)) # True
+print(issubclass(bool, float)) # False
+print(issubclass(bool, (int, float))) # True
+print(issubclass(bool, (float, int))) # True
+# 둘 중하나가 True면 True가 나온다.
+# in which case return True if class is a subclass of any entry in classinfo.
 ```
 
 
@@ -930,11 +945,11 @@ class Student(Person):
 
 Python의 모든 클래스는 object로부터 상속됨
 
-부모 클래스의 모든 요소(속성, 메소드)가 상속됨
+부모 클래스의 모든 **요소(속성, 메소드)가 상속**됨
 
-super()를 통해 부모 클래스의 요소를 호출할 수 있음
+**super()**를 통해 부모 클래스의 요소를 호출할 수 있음
 
-메소드 오버라이딩을 통해 자식클래스에서 재정의 가능함
+메소드 오버라이딩을 통해 자식클래스에서 **재정의** 가능함
 
 상속관계에서의 이름 공간은 instance, 자식 class, 부모 class 순으로 탐색
 
@@ -953,8 +968,8 @@ class Person:
     def __init__(self, name):
         self.name = name
 
-	def greeting(self):
-        return f'안녀, {self.name}'
+    def greeting(self):
+        return f'안녕, {self.name}'
     
 class Mom(Person):
     gene = 'XX'
@@ -976,23 +991,25 @@ class FirstChild(Dad, Mom):
         return '첫째가 응애'
 
 baby1 = FirstChild('아가')
-baby1.cry()
-baby1.swim()
-baby1.walk()
-baby1.gene
+baby1.cry()		#'첫째가 응애'
+baby1.swim()	#'첫째가 수영'
+baby1.walk()	#'아빠가 걷기'
+baby1.gene		#'XY'	Dad이 먼저 적혀있기 때문
+```
 
-class SecondChild(Dad, Mom):
+```python
+class SecondChild(Mom, Dad):
     def walk(self):
-        return '첫째가 수영'
+        return '둘째가 걷기'
     
     def cry(self):
-        return '첫째가 응애'
+        return '둘째가 응애'
 
 baby2 = SecondChild('아가')
-baby2.cry()
-baby2.swim()	##
-baby2.walk()	##
-baby2.gene
+baby2.cry()		#'둘째가 응애'
+baby2.swim()	#'엄마가 수영'
+baby2.walk()	#'둘째가 걷기'
+baby2.gene		#'XX'	Mom이 먼저 적혀있기 때문
 ```
 
 
@@ -1006,7 +1023,10 @@ mro 메소드 (Method Resolution Order)
 
 ```python
 FirstChild.mro()
-SecondChild.mro(s)
+SecondChild.mro()
+
+[__main__.FirstChild, __main__.Dad, __main__.Mom, __main__.Person, object]
+[__main__.SecondChild, __main__.Mom, __main__.Dad, __main__.Person, object]
 ```
 
 
@@ -1016,7 +1036,7 @@ SecondChild.mro(s)
 다형성(Polymorphism)이란?
 
 * 여러 모양을 뜻하는 그리스어
-* 동일한 메소드가 클래스에 따라 다르게 행동할 수 있음을 의미
+* <u>동일한 메소드가 클래스에 따라 다르게 행동할 수 있음을 의미</u>
 * 즉, 서로 다른 클래스에 속해있는 객체들이 <u>동일한 메시지에 대해 다른 방식으로 응답될 수 있음</u>
 
 
@@ -1063,17 +1083,33 @@ s1.talk()
 
 * 예시 : 주민등록번호
 
-파이썬에서 암묵적으로 존재하지만, 언어적으로는 존재하지 않은
+<u>파이썬에서 암묵적으로 존재하지만, 언어적으로는 존재하지 않음</u>
+
+```python
+class Person:
+    
+    def get_name(self):
+        return self.name
+    
+    def set_name(self, name):
+        self.name = name
+  
+p2 = Person()
+p2.set_name('한솔')
+p2.get_name()
+
+'한솔'
+```
 
 
 
 ### 접근제어자 종류
 
-Public Access Modifier
+Public Access Modifier : 어디서나
 
-Protected Access Modifier
+Protected Access Modifier : 상속관계
 
-Private Access Modifier
+Private Access Modifier : 본인
 
 
 
@@ -1081,7 +1117,7 @@ Private Access Modifier
 
 언더바가 없이 시작하는 메소드나 속성
 
-어디서나 호출이 가능, 하위 클래스 override 허용
+어디서나 호출이 가능, 하위 클래스 **override** 허용
 
 일반적으로 작성되는 메소드와 속성의 대다수를 차지
 
@@ -1096,6 +1132,9 @@ class Person:
 p1 = Person('김싸피', 30)
 print(p1.name)
 print(p1.age)
+
+김싸피
+30
 ```
 
 
@@ -1106,15 +1145,15 @@ print(p1.age)
 
 암묵적 규칙에 의해 부모 클래스 내부와 자식 클래스에서만 호출 가능
 
-하위 클래스 override 허용
+**하위 클래스 override 허용**
 
 ```python
 class Person:
     def __init__(self, name, age):
         self.name = name
-        self.age = age
+        self._age = age
         
-	def get_age(self):
+    def get_age(self):
         return self._age
     
 # 인스턴스를 만들고 get_age 메서드를 활용하여 호출할 수 있습니다.
@@ -1125,6 +1164,9 @@ p1.get_age()
 # _age에 직접 접근하여도 확인이 가능합니다.
 # python에서는 암묵적으로 활용될 뿐입니다.
 p1._age
+
+30
+30
 ```
 
 
@@ -1145,7 +1187,7 @@ class Person:
         self.name = name
         self.__age = age
         
-	def get_age(self):
+    def get__age(self):
         return self.__age
 
 # 인스턴스를 만들고 get__age 메서드를 활용하여 호출할 수 있습니다.
@@ -1155,6 +1197,15 @@ p1.get__age()
 
 # __age에 직접 접근이 불가능합니다.
 p1.__age    
+
+30
+AttributeError                            Traceback (most recent call last)
+Input In [112], in <module>
+     12 p1.get__age()
+     14 # __age에 직접 접근이 불가능합니다.
+---> 15 p1.__age
+
+AttributeError: 'Person' object has no attribute '__age'
 ```
 
 
@@ -1173,29 +1224,75 @@ class Person:
     def __init__(self, age):
         self._age = age
         
-	@property
+    @property
     def age(self):
         return self._age
     
-	@age.setter
+    @age.setter
     def age(self, new_age):
         if new_age <= 19:
-            raise ValueError('Too Young For SSAFY')
-            return
-        
+            raise ValueError('Too Young For enter')
+            return    
         self._age = new_age
-        
+```
+
+```python
+p1 = Person(10)
+p1.age()
+
+TypeError                                 Traceback (most recent call last)
+Input In [124], in <module>
+      1 p1 = Person(10)
+----> 2 p1.age()
+
+TypeError: 'int' object is not callable
+```
+
+```python
+p1.age # method를 정의했는데 속성처럼 쓰이도록 한다.
+
+10
+```
+
+```python
 # Person의 인스턴스를 만들어서 나이에 접근하면 정상적으로 출력됩니다.
 p1 = Person(20)
 print(p1.age)
+
+20
+```
+
+```python
 
 # p1 인스턴스의 나이를 다른 값으로 바꿔도 정상적으로 반영됩니다.
 p1.age = 33
 print(p1.age)
 
+33
+```
+
+```python
 # setter 함수에는 '나이가 19살 이하면 안된다는' 조건문이 하나 걸려있습니다.
 # 따라서 나이를 19살 이하인 값으로 변경하게 되면 오류가 발생합니다.
 p1.age = 19
 print(p1.age)
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Input In [128], in <module>
+----> 1 p1.age = 19
+      2 print(p1.age)
+
+Input In [123], in Person.age(self, new_age)
+      9 @age.setter
+     10 def age(self, new_age):
+     11     if new_age <= 19:
+---> 12         raise ValueError('Too Young For enter')
+     13         return
+     15     self._age = new_age
+
+ValueError: Too Young For enter
 ```
 
+
+
+python문서 확인하면 도움될 것
