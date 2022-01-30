@@ -183,3 +183,285 @@ print(Student.add_population)
 # 실행할수록 증가
 ```
 
+
+
+
+
+**OOP practice**
+
+```python
+# kim, kwon, lee # istance
+# name, major # instance 변수
+# class 3, 2 eyes, 2 legs # class 변수
+# eat, walk # method
+
+class Daejeon3:
+    # class 바로 아래에서 정의해주는 class 변수
+    ban = '대전 3반'
+    eyes = '2개'
+    
+    def __init__(self, name, major):
+        self.name = name	#self라는 instance의 name이라는 속성에 name이라는 값을 넣는다.
+        self.major = major
+```
+
+```python
+       
+# instance 변수의 두가지 사용방법
+# instance 변수는 공통적으로 가지고 있지만 값(value)이 다름
+# instance에 접근해서 할당해줘야한다.
+jun = Daejeon3('jun', 'math')
+print(jun.name)
+jun.gender = 'male'
+print(jun.gender)
+
+kwon = Daejeon3('kwon','eco')
+print(kwon.name)
+```
+
+```python
+# class 변수 : class내에서 공통적으로 가지고 있고 값(value)이 같음
+print(jun.ban)
+
+# namespace를 생각할 때, instance변수 ban에 값을 추가
+# classmethod등을 사용해서 class 변수에 접근할 수 있다.
+jun.ban = '대전3'
+print(jun.ban)
+print(Daejeon3.ban)
+
+대전 3반
+대전3
+대전 3반
+```
+
+```python
+# 메소드는 변수와 다르게 어떠한 기능을 담당
+# 메소드도 함수의 일종이나 class안에 종속되는 함수
+
+def eat(self): # instance가 동작하는 것이기 때문에 self가 필요
+    print('냠냠')
+    
+jun.eat() # 변수와 다르게 불러온다.
+```
+
+```python
+	def __str__(self):
+        return f'내이름은 {self.name}이다'
+    
+print(jun)
+
+내이름은 jun이다
+```
+
+```python 
+class Daejeon3:
+    # class 바로 아래에서 정의해주는 class 변수
+    ban = '대전 3반'
+    eyes = '2개'
+    
+    def __init__(self, name, major):
+        self.name = name
+        self.major = major
+        
+    def eat(self):
+        print('냠냠')
+        
+    def get_direct(self):
+        return Daejeon3.ban
+    
+    @classmethod
+    def get_cls(cls):
+        return cls.ban
+ 
+jun = Daejeon3('jun','math')
+jun.ban = '대전3'
+print(jun.ban)
+print(jun.get_direct())
+print(jun.get_cls())
+
+대전3
+대전 3반
+대전 3반
+```
+
+
+
+**get_ins 와 get_cls의 차이는 상속을 했을 때 발생**
+
+```python
+class Daejeon3:
+    # class 바로 아래에서 정의해주는 class 변수
+    ban = '대전 3반'
+    eyes = '2개'
+    
+    def __init__(self, name, major):
+        self.name = name
+        self.major = major
+        
+    def eat(self):
+        print('냠냠')
+        
+    def get_direct(self):
+        return Daejeon3.ban
+    
+    @classmethod			# Daejeon3의 subclass D3Ace
+    def get_cls(cls):
+        return cls.ban
+ 
+class D3Ace(Daejeon3):
+    ban = '에이스반!'
+    pass
+
+choi = D3Ace('choi','mech')
+choi.ban = '보충'
+print(choi.ban)				# instance choi의 변수
+print(choi.get_cls())		# D3Ace class의 변수
+print(choi.get_direct())	# Daejeon class의 변수
+
+보충
+에이스반!
+대전 3반
+```
+
+생략을 위해 
+
+데코레이터를 안쓰면 instance method
+
+@classmethod로 쓰면 class method
+
+@staticmethod로 쓰고 정보가 필요없이 어떤 동작이면 static method
+
+```python
+@classmethod # 데코레이터로 감싸주게 되면
+def ban_cls(cls):
+    return cls.ban	
+
+ban.cls()	# 바로 써주면 된다.
+
+def ban_cls(cls):
+    return cls.ban
+
+# 데코레이터가 없는 경우
+classmethod(ban_cls()) # 이런 것처럼 동작한다.
+
+# 데코레이터가 함수를 인자로 받아서 추가적인 기능을 도와준다.
+```
+
+
+
+**Private Member를 사용하는 방법**
+
+```python
+class Person:
+    def __init__(self, namem age = 19):
+        self.__name = name
+        self.age = age
+        
+jun = Person('jun')
+# print(jun.__name)
+print(jun._Person__name)
+```
+
+
+
+**getter 메소드와 setter 메소드**
+
+```python
+class Person:
+    def __init__(self, name):
+        self._name = name # 캡슐화. 직접적으로 변수이름을 가져오지 않음
+        
+    def name(self):
+        return f'이 아이의 성은 {self._name}'
+    
+jun = Person('jun')
+print(jun.name()) # 메소드
+
+이 아이의 성은 jun
+```
+
+``` python
+class Person:
+    def __init__(self, name):
+        self._name = name # 캡슐화. 직접적으로 변수이름을 가져오지 않음
+    @property	# @property를 붙여주어 변수로서 활동
+    def name(self):
+        return f'이 아이의 성은 {self._name}'
+    
+jun = Person('jun')
+print(jun.name)
+
+이 아이의 성은 jun
+```
+
+```python
+class Person:
+    def __init__(self, age):
+        self._age = age
+    @property	# getter: 저장된 값을 꺼낼때 하는 작업
+    def age(self):
+        return self._age + 10
+    
+    @age.setter	# age라는 property의 setter, 넣을 때 하는 작업
+    def age(self, new_age):
+        self._age = new_age * 10
+        
+jun = Person(18)
+print(jun.age)
+jun.age = 100	# setter 작동
+print(jun.age)
+
+28
+1010	# getter 작동
+```
+
+변수명을 사용하면 이러한 추가적인 작업을 할 수 없다.
+
+**_(언더바)**가 없다면 오류발생
+
+
+
+**다형성**
+
+```python
+class Enter:
+
+    def hello(self):
+        print('안녕하세요')
+        
+class Daejeon(Enter):
+    def hello(self):	# 오버라이딩
+        super().hello()	# 상속
+        print('대전입니다.')
+        
+kim = Daejeon()
+kim.hello()
+
+안녕하세요
+대전입니다.
+```
+
+
+
+**instance간의 상호작용**
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+    
+    def hello(self):
+        print(f'{self.name} : hello!')
+        
+    def hello_to(self, other):
+        print(f'{self.name} : {other.name} 안녕!')
+        
+kim = Person('jun')
+choi = Person('choi')
+kim.hello()
+kim.hello_to(choi)
+
+jun : hello!
+jun : choi 안녕!
+```
+

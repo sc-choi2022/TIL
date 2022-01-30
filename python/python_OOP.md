@@ -411,9 +411,9 @@ Double underscore(__)가 있는 메소드는 특수한 동작을 위해 만들�
 특정 상황에 자동으로 불리는 메소드
 
 ```python
-__str__(self)	
+__str__(self)	# print함수를 사용시 __str__의 방법이 호출(informal)
 __len__(self)	
-__repr__(self)	
+__repr__(self)	# formal, 정보를 주는 것(developer에게)
 __lt__(self)	#<
 __le__(self)	#<=
 __eq__(self)	#==
@@ -771,7 +771,7 @@ class Person:
 
 클래스는 상속이 가능함
 
-- 모든 python class는 object를 상속 받음
+- **모든 python class는 object를 상속 받음**
 
 ```python
 class ChildClass(ParentClass):
@@ -907,6 +907,8 @@ print(issubclass(bool, (float, int))) # True
 * 자식클래스에서 부모클래스를 사용하고 싶은 경우
 * super()를 사용할 경우 모두 다 받아와서 덮어씌우는 형태로 작성
 
+<u>추가 기능을 구현하고 싶을 때</u>
+
 ```python
 class Person:    
     def __init__(self, name, age, number, email):
@@ -961,7 +963,7 @@ Python의 모든 클래스는 object로부터 상속됨
 
 상속 받은 모든 클래스의 요소를 활용 가능함
 
-중복된 속성이나 메서드가 있는 경우 상속 순서에 의해 결정됨
+중복된 속성이나 메서드가 있는 경우 <u>상속 순서에 의해 결정</u>됨
 
 ```python
 class Person:
@@ -1147,6 +1149,14 @@ print(p1.age)
 
 **하위 클래스 override 허용**
 
+*밖에서 필요없는 정보이지만 메소드 내부에서는 그 정보를 사용해야할 수 있다.*
+
+*이를 언급하기 위해서 Protected Member로 언더바 1개를 사용해서 표현*
+
+*직접 호출할 필요없이 사용한 것을 가공해서 보여줄 것으로 숨겨두는 것*
+
+*이를 개발자가 사용자나 다른 개발자에게 알려주는 것*
+
 ```python
 class Person:
     def __init__(self, name, age):
@@ -1175,11 +1185,13 @@ p1._age
 
 **언더바 2**개로 시작하는 메소드나 속성
 
-본 클래스 내부에서만 사용이 가능
+<u>본 클래스 내부에서만 사용이 가능</u>
 
-하위클래스 상속 및 호출 불가능(오류)
+<u>하위클래스 상속 및 호출 불가능(오류)</u>
 
-외부 호출 불가능(오류)
+<u>외부 호출 불가능(오류)</u>
+
+*하위클래스에게 사용하지 못함을 직접적으로 언급하는 것*
 
 ```python
 class Person:
@@ -1212,7 +1224,7 @@ AttributeError: 'Person' object has no attribute '__age'
 
 ### getter 메소드와 setter 메소드
 
-변수에 접근할 수 있는 메소드를 별도로 생성
+**변수**에 <u>접근할 수 있는 메소드</u>를 별도로 생성
 
 * getter method : 변수의 값을 읽는 메소드
   * @property 데코레이터 사용
@@ -1263,7 +1275,6 @@ print(p1.age)
 ```
 
 ```python
-
 # p1 인스턴스의 나이를 다른 값으로 바꿔도 정상적으로 반영됩니다.
 p1.age = 33
 print(p1.age)
