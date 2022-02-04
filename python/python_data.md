@@ -871,11 +871,11 @@ print(a)
 
 
 
-##### 셋.pop() vs 리스트.index()
+##### 셋.pop() vs 리스트.pop()
 
 Set의 .pop(): 임의의 원소를 제거해 반환
 
-List의 .indext(): 기본은 마지막
+List의 .pop(): 기본은 마지막, index가능
 
 
 
