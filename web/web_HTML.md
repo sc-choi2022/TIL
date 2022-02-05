@@ -74,6 +74,8 @@ Hyper Text Markup Language : 웹 페이지를 작성(구조화)하기 위한 언
 * HTML 문서의 메타 데이터를 통해 문서의 정보를 전달
 * 메타정보에 해당하는 제목, 설명 등을 쓸 수 있도록 정의
 
+예) notion에 youtube link를 넣을 때 thumbnail부터 설명이 나오는 것
+
 
 
 ##### DOM(Document Object Model) 트리
@@ -101,27 +103,27 @@ HTML의 요소는 태그와 내용(contents)로 구성되어 있다.
 
 HTML 요소는 시작태그와 종료 태그 그리고 태그 사이에 위치한 내용으로 구성되어 있다.
 
-* 태그(Element, 요소)는 컨텐츠(내용)를 감싸는 것으로 그 정보의 성격과 의미를 정의
+* 태그(Element, 요소)는 <u>컨텐츠(내용)를 감싸는 것</u>으로 그 정보의 성격과 의미를 정의
 
 내용이 없는 태그
 
 * br, hr, img, input, link, meta
 
-요소는 중첩(nested)될 수 있다.
+요소는 중첩(nested)될 수 있다. (포함 관계가 가능하다.)
 
 * 요소의 중첩을 통해 하나의 문서를 구조화
 * 여는 태그와 닫는 태그의 쌍을 잘 확인해야한다.
-  * 오류를 반환하는 것이 아닌 그냥 레이아웃이 깨진 상태로 출력되기 때문에, 디버깅이 힘들어 질 수 있다.
+  * 오류를 반환하는 것이 아닌 그냥 레이아웃이 깨진 상태로 출력되기 때문에, <u>디버깅이 힘들어 질 수 있다.</u>
 
 
 
 ##### 속성(attribute)
 
-태그별로 사용할 수 있는 속성은 다르다.
+태그별로 사용할 수 있는 속성은 다르다. (속성명, 속성값)
 
 작성 방식 통일하기
 
-* 속성끼리 묶기 위해 : 공백을 없이 입력한다.
+* 태그와 속성을 구분하고 속성끼리 묶기 위해 : 공백없이 입력한다.
 * 쌍따옴표를 사용한다.
 
 속성을 통해 태그의 부가적인 정보를 설정할 수 있다.
@@ -143,7 +145,7 @@ HTML 요소는 시작태그와 종료 태그 그리고 태그 사이에 위치�
 * data-* : 페이지에 개인 사용자 정의 데이터를 저장하기 위해 사용
 * style : inline 스타일
 * title : 요소에 대한 추가 정보 지정
-* tabindex : 요소의 탭 순서
+* tabindex : 요소의 탭 순서 (cf: NULI 웹 접근성)
 
 
 
@@ -156,7 +158,7 @@ HTML5에서 의미론적 요소를 담은 태그의 등장
 대표적인 태그 목록
 
 * header : 문서 전체나 섹션의 헤더(머리말 부분) 
-* nav : 내비게이션
+* nav : 내비게이션(메뉴바)
 * aside : 사이드에 위치한 공간, 메인 콘텐츠와 관련성이 적은 콘텐츠
 * section : 문서의 일반적인 구분, 컨텐츠의 그룹을 표현
 * article : 문서, 페이지, 사이트 안에서 독립적으로 구분되는 영역
@@ -164,7 +166,7 @@ HTML5에서 의미론적 요소를 담은 태그의 등장
 
 
 
-Non semantic 요소는 div, span등이 있으며 h1, table태그들도 시맨틱 태그로 볼 수 있다.
+Non semantic 요소는 **div, span**등이 있으며 <u>h1, table태그들도 시맨틱 태그</u>로 볼 수 있다.
 
 개발자 및 사용자 뿐만 아니라 검색엔징 등에 의미 있는 정보의 그룹을 태그로 표현한다.
 
@@ -180,14 +182,18 @@ Non semantic 요소는 div, span등이 있으며 h1, table태그들도 시맨틱
 
 ##### 텍스트 요소
 
-| 태그                               | 설명                                                         |
-| ---------------------------------- | ------------------------------------------------------------ |
-| \<a>\</a>                          | href 속성을 활용하여 다른 URL로 연결하는 하이퍼링크 생성     |
-| \<b>\</b><br />\<strong>\</strong> | 굵은 글씨 요소<br />중요하고 강조하고자 하는 요소 (보통 굷은 글씨로 표현) |
-| \<i>\</i><br />\<em>\</em>         | 기울임 글씨 요소<br />중요하고 강조하고자 하는 요소 (보통 기울림 글씨로 표현) |
-| \<br>                              | 텍스트 내에 줄 바꿈 생성                                     |
-| \<img>                             | src 속성을 활용하여 이미지 표현                              |
-| \<span>\</span>                    | 의미 없는 인라인 컨테이너                                    |
+| 태그                                   | 설명                                                         |
+| -------------------------------------- | ------------------------------------------------------------ |
+| \<a>\</a>                              | href 속성을 활용하여 다른 URL로 연결하는 하이퍼링크 생성     |
+| \<b>\</b><br />**\<strong>\</strong>** | 굵은 글씨 요소(inline요소, <u>enter인식 X</u>)<br />중요하고 강조하고자 하는 요소 (보통 굷은 글씨로 표현) |
+| \<i>\</i><br />**\<em>\</em>**         | 기울임 글씨 요소<br />중요하고 강조하고자 하는 요소 (보통 기울림 글씨로 표현) |
+| \<br>                                  | 텍스트 내에 줄 바꿈 생성                                     |
+| \<img>                                 | src 속성을 활용하여 이미지 표현                              |
+| \<span>\</span>                        | 의미 없는 인라인(inline) 컨테이너                            |
+
+**bold체는 중요한 것이라는 강조의 시맨틱적 의미가 담겨 있는 태그**
+
+\<p>\</p> : box요소, <u>enter인식 O</u>
 
 
 
@@ -200,7 +206,7 @@ Non semantic 요소는 div, span등이 있으며 h1, table태그들도 시맨틱
 | \<ol>\</ol><br />\<ul>\</ul> | 순서가 있는 리스트(ordered)<br />순서가 없는 리스트(unordered) |
 | \<pre>\</pre>                | HTML에 작성한 내용을 그대로 표현.<br />하나의 문단(paragraph)<br />**enter인식 O** |
 | \<blockquote>\</blockquote>  | 텍스트가 긴 인용문<br />주로 들여쓰기를 한 것으로 표현됨     |
-| \<div>\</div>                | 의미 없는 블록 레벨 컨테이너                                 |
+| \<div>\</div>                | 의미 없는 블록(block) 레벨 컨테이너                          |
 
 
 
@@ -255,9 +261,9 @@ colspan(column 묶음), rowspan(row 묶음)
 
 \<form>기본 속성
 
-* action: from을 처리할 서버의 URL
-* method: form을 제출할 때 사용할 HTTP 메서드(GET 혹은 POST)
-  * GET: URL에 정보노출
+* **action:** from을 처리할 서버의 URL
+* **method:** form을 제출할 때 사용할 HTTP 메서드(GET 혹은 POST)
+  * GET: URL에 정보노출(query형태로 보이게 된다.)
   * POST: 서버에 숨겨서 전달
 * enctype: method가 post인 경우 데이터의 유형
   * application/x-www-form-urlencoded: 기본값
@@ -269,10 +275,12 @@ colspan(column 묶음), rowspan(row 묶음)
 ##### input
 
 * 다양한 타입을 가지는 입력 데이터 유형과 위젯이 제공되었다.
+* form과 세트로 묶이는 경우가 많다.
 * \<input> 대표적인 속성
   * name: form control에 적용되는 이름(이름/값 페어로 전송)
   * value: form control에 적용되는 값(이름/값 페어로 전송)
-  * required, readonly, autofocus, autocomplete, disable 등
+  * (dictionary의 key: value 느낌으로 이해해도 된다.)
+  * required(필요), readonly(직접 작성 불가), autofocus(커서 자동위치), autocomplete(자동 완성), disable(input을 작동 못하게 하게) 등
 
 
 
@@ -282,10 +290,11 @@ colspan(column 묶음), rowspan(row 묶음)
   * 사용자는 선택할 수 있는 역역이 늘어나 웹/모바일(터치) 환경에서 편하게 사용할 수 있다.
   * label과 input 입력의 관계가 시각적 뿐만 아니라 화면리더기에서도 label을 읽어 쉽게 내용을 확인 할 수 있도록 한다.
 * \<input>에 id 속성을, \<label>에는 for 속성을 활용하여 상호 연관을 시킨다.
+* label의 for와 input의 id가 묶여서 동기화가 된다.
 
 ```html
 <label for="agreement">개인정보 수집에 동의합니다.</label>
-<input type="chekcbox" anme="agreement" id="agreement">
+<input type="chekcbox" name="agreement" id="agreement">
 ```
 
 
@@ -366,3 +375,7 @@ hidden input을 활용하여 사용자 입력을 받지 않고 서버에 전송�
 ###### 종합
 
 \<input> 요소의 동작은 type에 따라 달라지므로, 각 내용을 숙지해야한다.
+
+
+
+**mdn을 활용하여 검색**
