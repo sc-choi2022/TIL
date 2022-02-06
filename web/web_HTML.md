@@ -4,7 +4,7 @@
 
 # Web
 
-### HTML
+## HTML
 
 Hyper Text Markup Language : 웹 페이지를 작성(구조화)하기 위한 언어
 
@@ -16,9 +16,13 @@ Hyper Text Markup Language : 웹 페이지를 작성(구조화)하기 위한 언
 
 태그 등을 이용하여 문서나 데이터의 구조를 명시하는 언어
 
+<u>**프로그래밍 언어와 마크업언어는 다르다.**</u>
+
+<u>**html은 마크업언어로 프로그래밍 언어가 아니다.**</u>
 
 
-#### HTML 기본구조
+
+### HTML 기본구조
 
 <u>html</u>
 
@@ -67,7 +71,7 @@ Hyper Text Markup Language : 웹 페이지를 작성(구조화)하기 위한 언
 
 
 
-##### Open Graph Protocol
+#### Open Graph Protocol
 
 메타 데이터를 표현하는 새로운 규약
 
@@ -78,7 +82,7 @@ Hyper Text Markup Language : 웹 페이지를 작성(구조화)하기 위한 언
 
 
 
-##### DOM(Document Object Model) 트리
+#### DOM(Document Object Model) 트리
 
 텍스트 파일인 HTML 문서를 브라우저에서 렌더링 하기 위한 구조
 
@@ -97,7 +101,7 @@ Hyper Text Markup Language : 웹 페이지를 작성(구조화)하기 위한 언
 
 
 
-##### 요소(element)
+#### 요소(element)
 
 HTML의 요소는 태그와 내용(contents)로 구성되어 있다.
 
@@ -117,7 +121,7 @@ HTML 요소는 시작태그와 종료 태그 그리고 태그 사이에 위치�
 
 
 
-##### 속성(attribute)
+#### 속성(attribute)
 
 태그별로 사용할 수 있는 속성은 다르다. (속성명, 속성값)
 
@@ -136,7 +140,7 @@ HTML 요소는 시작태그와 종료 태그 그리고 태그 사이에 위치�
 
 
 
-##### HTML Global Attribute
+#### HTML Global Attribute
 
 모든 HTML 요소가 공통으로 사용할 수 있는 대표적인 속성(어떤 요소에는 효과가 없을 수 있다.)
 
@@ -149,7 +153,7 @@ HTML 요소는 시작태그와 종료 태그 그리고 태그 사이에 위치�
 
 
 
-##### 시맨틱 태그
+#### 시맨틱 태그
 
 HTML5에서 의미론적 요소를 담은 태그의 등장
 
@@ -178,9 +182,9 @@ Non semantic 요소는 **div, span**등이 있으며 <u>h1, table태그들도 �
 
 
 
-#### HTML 문서 구조화
+### HTML 문서 구조화
 
-##### 텍스트 요소
+#### 텍스트 요소
 
 | 태그                                   | 설명                                                         |
 | -------------------------------------- | ------------------------------------------------------------ |
@@ -197,7 +201,7 @@ Non semantic 요소는 **div, span**등이 있으며 <u>h1, table태그들도 �
 
 
 
-##### 그룹 컨텐츠
+#### 그룹 컨텐츠
 
 | 태그                         | 설명                                                         |
 | ---------------------------- | ------------------------------------------------------------ |
@@ -210,7 +214,7 @@ Non semantic 요소는 **div, span**등이 있으며 <u>h1, table태그들도 �
 
 
 
-##### table
+#### table
 
 ```html
 <body>
@@ -255,7 +259,7 @@ colspan(column 묶음), rowspan(row 묶음)
 
 
 
-##### form
+#### form
 
 \<form>은 정보(데이터)를 서버에 제출하기 위한 영역
 
@@ -272,7 +276,7 @@ colspan(column 묶음), rowspan(row 묶음)
 
 
 
-##### input
+#### input
 
 * 다양한 타입을 가지는 입력 데이터 유형과 위젯이 제공되었다.
 * form과 세트로 묶이는 경우가 많다.
@@ -284,7 +288,7 @@ colspan(column 묶음), rowspan(row 묶음)
 
 
 
-##### input label
+#### input label
 
 * label을 클릭하여 input 자체의 초점을 맞추거나 활성화 시킬 수 있다.
   * 사용자는 선택할 수 있는 역역이 늘어나 웹/모바일(터치) 환경에서 편하게 사용할 수 있다.
@@ -334,9 +338,9 @@ colspan(column 묶음), rowspan(row 묶음)
 
 
 
-##### input 유형
+#### input 유형
 
-###### 일반
+##### 일반
 
 일반적으로 입력을 받기 위하여 제공되며 타입별로 HTML기본 검증 혹은 추가 속성을 활용할 수 있다.
 
@@ -348,7 +352,7 @@ colspan(column 묶음), rowspan(row 묶음)
 
 
 
-###### 항목 중 선택
+##### 항목 중 선택
 
 일반적으로 label을 사용하여 내용을 작성하여 항목 중 선택할 수 있는 input을 제공
 
@@ -359,7 +363,7 @@ colspan(column 묶음), rowspan(row 묶음)
 
 
 
-###### 기타
+##### 기타
 
 다양한 종류의 input을 위한 picker를 제공
 
@@ -372,7 +376,7 @@ hidden input을 활용하여 사용자 입력을 받지 않고 서버에 전송�
 
 
 
-###### 종합
+##### 종합
 
 \<input> 요소의 동작은 type에 따라 달라지므로, 각 내용을 숙지해야한다.
 
