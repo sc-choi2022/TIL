@@ -631,6 +631,7 @@ display: inline
 * <u>width, height, margin-top, margin-bottom을 지정할 수 없다.</u>
 * (가로 세로의 개념없이 자신의 size만을 가지고 있다.)
 * 상하 여백은 line-height로 지정한다.
+* <u>너비와 높이를 지정하기 위해 inline => block으로 바꿔주어야 한다. display: block</u>
 
 
 

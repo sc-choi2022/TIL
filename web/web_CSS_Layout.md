@@ -61,7 +61,14 @@ right: 요소를 오른쪽으로 띄운다.
 
 
 
-파랑이 작아지는 문제?
+**float된 box 이후 다음 box의 크기가 작아지는 문제**
+
+1. 부모 요소가 float로 높이가 0 자식 float 
+2. 다음 box가 공간을 채운다.
+
+​	<u>1번에 clearing!</u>
+
+
 
 #### Clearing Float
 
@@ -80,7 +87,7 @@ right: 요소를 오른쪽으로 띄운다.
 }
 ```
 
-Float는 Normal Flow에서 벗어나 부동 상태이다.
+Float는 <u>Normal Flow에서 벗어나 부동 상태</u>이다.
 
 따라서, 이후 요소에 대하여 Float 속성이 적용되지 않도록 Clearing이 필수적이다.
 
@@ -99,7 +106,7 @@ Float는 레이아웃을 구성하기 위해 필수적으로 활용되었으며,
 Float 활용 전략 - Normal Flow에서 벗어난 레이아웃 구성
 
 * 원하는 요소들을 Float로 지정하여 배치
-* 부모 요소에 반드시 Clearing Float를 하여 이후 요소부터 Normal Flow를 가지도록 지정
+* <u>부모 요소에 반드시 Clearing Float를 하여 이후 요소부터 Normal Flow를 가지도록 지정</u>
 
 
 
@@ -164,8 +171,8 @@ Flex Item(자식 요소)
 
 공간 나누기
 
-* justify-content (main axis)
-* align-content (cross axis)
+* <u>justify-content (main axis)</u>
+* <u>align-content (cross axis)</u>
 
 정렬
 
@@ -204,12 +211,12 @@ flex-direction: Main axis의 방향을 설정
 
 flex-wrap: 요소들이 강제로 한 줄에 배치 되게 할 것인지 여부 설정
 
-* nowrap(기본 값) : 한 줄에 배치
+* <u>nowrap(기본 값) : 한 줄에 배치</u>
 * wrap: 넘치면 그 다음 줄로 배치
 
 flex-flow
 
-* flex-direction 과 flex-wrap의 shorthand
+* <u>flex-direction 과 flex-wrap의 shorthand</u>
 * flex-direction 과 flex-wrap에 대한 설정 값을 차례로 작성
   * flex-flow: row nowrap;
 
@@ -288,6 +295,8 @@ Cross axis를 중심으로
 * flex-end: 아래
 * center: 가운데
 * baseline: 텍스트 baseline에 기준선을 맞춘다.
+  * 다른 두 글자의 수직높이를 맞출때 사용
+
 
 
 
