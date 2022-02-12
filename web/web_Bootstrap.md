@@ -290,8 +290,6 @@ offset은 공간을 차지하며 contents보다 먼저 존재
 
 
 
-
-
 #### 추가
 
 ##### Border color
