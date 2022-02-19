@@ -437,7 +437,16 @@ lst1 = list(map(list,zip(*lst[::-1])))[::-1]	# 점대칭
 
 **& 연산자**
 
-i & (1<<j): i의 j번째 비트가 1인지 아닌지를 검사한다.
+i & (1<<j)
+
+: i의 j번째 비트가 1인지 아닌지를 검사한다.(if문에 들어갔을 때 이러한 역할 가능)
+
+**\+ boolean 추가되어야 맞는 설명**
+
+* i & (1<<j)의 결과가 0보다 크면 있다.
+* i & (1<<j)의 결과가 0이면 없다.
+
+**자리의 연산을 통해 0 또는 2\**j 이 나오게 될 것 if문의 표현조건문으로 들어가게 되면 암묵적 형변환에 의해 boolean으로 표현된다.**
 
 
 
@@ -455,6 +464,19 @@ print(bin(10>>2))
 0b10100
 0b101000
 0b10
+```
+
+```python
+print(int('10110',2))
+print(int('11011',2))
+print(22 & 27)
+print(bin(22 & 27))
+
+# 출력 값
+22
+27
+18
+0b10010
 ```
 
 
@@ -500,6 +522,17 @@ for num in arr:
     for y in range(size):
         subsets.append(subsets[y]+[num])
 print(Subsets)        
+```
+
+```python
+n = 4
+lst = [1, 2, 3, 4]
+power_set = []		# 모든 부분집합 있는 리스트
+for i in range(1<<n):
+    temp_set = []	# 부분집합
+    for j in range(n):
+        if i&(1<<j):
+            print(lst[j])
 ```
 
 
@@ -640,7 +673,7 @@ def binarySearch(a, N, key):
 	return False            	# 검색 실패
 ```
 
-cf) 재귀 함수 이용
+cf) 재귀 함수 이용 **base case 중요(멈추는 시기)**
 
 ```python
 def binarySearch2(a, start, end, key):
