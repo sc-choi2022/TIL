@@ -9,7 +9,11 @@
 cf)
 
 * 선형구조: 자료 간의 관계가 1대1의 관계를 갖는다.
-* 비선형구조: 자료 간의 관계가 1대N의 관계를 갖는다.(예: 트리)
+  * 예: list, stack, queue, linked list
+
+* 비선형구조: 자료 간의 관계가 1대N의 관계를 갖는다.
+  * 예: graph, tree
+
 
 스택에 자료를 삽입하거나 스택에서 자료를 꺼낼 수 있다.
 
@@ -28,7 +32,7 @@ cf)
 * 자료구조: 자료를 선형으로 저장할 저장소
   * 배열을 사용할 수 있다.
   * 저장소 자체를 스택이라고 부르기도 한다.
-  * 스택에서 마지막 삽입된 원소의 위치를 top이라 부른다.
+  * 스택에서 마지막 삽입된 원소의 위치를 **top**이라 부른다. (stack pointer)
 * 연산
   * 삽입: 저장소에 자료를 저장한다. 보통 **push**라고 부른다.
   * 삭제: 저장소에서 자료를 꺼낸다. 꺼낸 자료는 삽인한 자료의 역순으로 꺼낸다. 보통 **pop**이라고 부른다.
@@ -66,6 +70,12 @@ top += 1		# push(20)
 stack[top] = 20
 ```
 
+cf) 
+
+append, pop은 리스트에서 시간이 올래걸리는 방법
+
+크기를 정해놓고 하는 것이 더 빠르다.
+
 
 
 #### Stack의 pop algorithm
@@ -85,7 +95,7 @@ def pop():
 def pop():
     global top
     if top == -1:
-        print('underflow')
+        print('underflow') # for debugging
         return 0
     else:
         top -= 1
@@ -271,4 +281,75 @@ def fibo2(n):
 * 너비 우선 탐색(Breadth First Search, BFS)
 
 
+
+시작 정점의 한 방향으로 갈 수 있는 경로가 있는 곳까지 깊이 탐색해 가다가 더이상 갈 곳이 없게 되면, 가장 마지막에 만났던 갈림기길 간선이 있는 정점으로 되돌아와서 다른 방향의 정점으로 탐색을 계속 반복하여 결국 모든 정점을 방문하는 순회방법
+
+가장 마지막에 만났던 갈림길의 정점으로 되돌아가서 다시 깊이 우선 탐색을 반복해야 하므로 **후입선출 구조의 스택 사용**
+
+
+
+#### DFS 알고리즘
+
+**1** 시작 정점 v를 결정하여 방문한다.
+
+**2** 정점 v에 인접한 정점 중에서
+
+1. 방문하지 않은 정점 w가 있으면, 정점 v를 스택에 push하고 정점 w를 방문한다.
+2. 방문하지 않은 정점이 없으면, 탐색의 방향을 바꾸기 위해서 스택을 pop하여 받은 가장 마지막 방문 정점을 v로 하여 다시 2.를 반복한다.
+
+**3** 스택이 공백이 될때까지 **2**를 반복한다.
+
+
+
+**길찾기 문제- DFS**
+
+```python
+# 10번의 테스트 케이스를 진행하기 위한 for문
+for _ in range(10):
+    # 테스크 케이스 번호와 길의 총 개수를 각각 case와 N에 할당
+    case, N = map(int, input().split())
+    # 순서쌍에 대한 정보를 arr에 모두 할당
+    arr = list(map(int, input().split()))
+    # 순서쌍의 정보를 확인하여 입력할 리스트 grid 생성
+    grid = [[0]*100 for _ in range(100)]
+
+    # arr에 담긴 값을 각 정점과 도착하는 정점의 번호로 구분하여 순서쌍 위치에 1을 할당
+    for i in range(0, N*2, 2):
+        grid[arr[i]][arr[i+1]] = 1
+
+    # 스택을 담을 리스트 stack과 방문정보를 저장할 visted 리스트 초기화
+    stack = []
+    visited = []
+
+    # 출발점이 0으로 지정되어 있기 때문에 stack과 visted에 0을 추가
+    stack.append(0)
+    visited.append(0)
+
+    # 답으로 출력할 ans를 초기화
+    ans = 0
+    # stack이 empty가 될 때까지
+    while stack:
+        # stack에 top에 있는 값을 temp에 할당
+        temp = stack[-1]
+
+        # 0~99까지의 노드에서
+        for node in range(100):
+            # grid의 값이 1이며 방문정보가 없는 노드를 stack과 vistied에 추가
+            if grid[temp][node] == 1 and node not in visited:
+                stack.append(node)
+                visited.append(node)
+                break
+        # for문의 반복이 끝날 때까지 break되지 않았다면 top 노드에서 갈수 있는 모든 node를 간 것이므로
+        # stack의 top값을 pop
+        else:
+            stack.pop()
+
+        # 도착 지점인 99에 방문한 기록이 있다면
+        if 99 in visited:
+            # ans에 1을 할당하고 while문을 탈출
+            ans = 1
+            break
+    # 테스트 케이스 번호와 답을 출력
+    print(f'#{case} {ans}')
+```
 
