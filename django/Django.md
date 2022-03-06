@@ -78,8 +78,6 @@ INSTALLED_APPS = [
 
 <u>**반드시 앱 생성 후 등록!**</u>
 
-
-
 我 urls.py import articles import views
 
 
