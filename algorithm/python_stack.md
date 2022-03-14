@@ -1,3 +1,5 @@
+[toc]
+
 # Stack
 
 ## Stack1
@@ -72,7 +74,7 @@ stack[top] = 20
 
 cf) 
 
-append, pop은 리스트에서 시간이 올래걸리는 방법
+append, pop은 리스트에서 시간이 오래걸리는 방법
 
 크기를 정해놓고 하는 것이 더 빠르다.
 
@@ -154,7 +156,6 @@ if top > -1:	# pop()
 * 함수 호출이 발생하면 호출한 함수 수행에 필요한 지역변수, 매개변수 및 수행 후 복귀할 주소등의 정보를 스택 프레임(stack frame)에 저장하여 시스템 스택에 삽입
 * 함수의 실행이 끝나면 시스템 스택의 top 원소(stack frame)를 삭제(pop)하면서 프레임에 저장되어 있던 복귀주소를 확인하고 복귀
 * 항수 호출과 복귀에 따라 이 과정을 반복하여 전체 프로그램 수행이 종료되면 시스템 스택은 공백 스택이 된다.
-* 
 
 
 
@@ -266,7 +267,7 @@ def fibo2(n):
 
 
 
-* memoization을 재귀적 구조에 사용하는 것보다 반복적 구조로 DP를 구현하는 것이 성능 면에서 보다 효율적이다.
+* memoization을 재귀적 구조에 사용하는 것보다 반복적 구조로 DP를 구현하는 것이 성능 면에서 보다 효율적이다.(단, DP도 일종의 완전탐색으로 모든 경우에서 빠르지는 않다.)
 * 재귀적 구조는 내부에 시스템 호출 스택을 사용하는 오버헤드가 발생하기 때문이다.
 
 
@@ -282,7 +283,7 @@ def fibo2(n):
 
 
 
-시작 정점의 한 방향으로 갈 수 있는 경로가 있는 곳까지 깊이 탐색해 가다가 더이상 갈 곳이 없게 되면, 가장 마지막에 만났던 갈림기길 간선이 있는 정점으로 되돌아와서 다른 방향의 정점으로 탐색을 계속 반복하여 결국 모든 정점을 방문하는 순회방법
+시작 정점의 한 방향으로 갈 수 있는 경로가 있는 곳까지 깊이 탐색해 가다가 더이상 갈 곳이 없게 되면, 가장 마지막에 만났던 갈림길 간선이 있는 정점으로 되돌아와서 다른 방향의 정점으로 탐색을 계속 반복하여 결국 모든 정점을 방문하는 순회방법
 
 가장 마지막에 만났던 갈림길의 정점으로 되돌아가서 다시 깊이 우선 탐색을 반복해야 하므로 **후입선출 구조의 스택 사용**
 
@@ -351,5 +352,394 @@ for _ in range(10):
             break
     # 테스트 케이스 번호와 답을 출력
     print(f'#{case} {ans}')
+```
+
+
+
+## Stack2
+
+### 계산기
+
+문자열로 된 계산식이 주어질 때, 스택을 이용하여 이 계산식의 값을 계산할 수 있다.
+
+문자열 수식 계산의 일반적 방법
+
+step1. 중위 표기법의 수식을 후위 표기법으로 변경한다. (스택 이용)
+
+step2. 후위 표기법의 수식을 스택을 이용하여 계산한다.
+
+**중위표기법(infix notation)**
+
+연산자를 피연산자의 가운데 표기하는 방법 **A+B**
+
+**후위표기법(postfix notation)**
+
+연산자를 피연산자의 뒤에 표기하는 방법 **AB+**
+
+
+
+**step1 중위 표기법의 수식을 후위 표기법으로 변경**
+
+1. 입력 받은 중위 표기식에서 토큰을 읽는다.
+2. 토큰이 피연산자이면 토큰을 출력한다.
+3. 토큰이 연산자(괄호포함)일 때, 이 토큰이 스택의 top에 저장되어 있는 연산자보다 우선순위가 높으면 스택에 push하고, 그렇지 않다면 스택 top의 연산자의 우선순위가 토큰의 우선순위보다 작을 때까지 스택에서 pop한 후 토큰의 연산자를 push한다. 만약 top에 연산자가 없으면 push한다.
+4. 토큰이 오른쪽 괄호 ')'이면 스택 top에 왼쪽 괄호 '('가 올 때까지 스택에 pop연산을 수행하고 pop한 연산자를 출력한다. 왼쪽 괄호를 만나면 pop만 하고 출력하지는 않는다.
+5. 중위 표기식에 더 읽을 것이 없다면 중지하고, 더 읽을 것이 있다면 1부터 다시 반복한다.
+6. 스택에 남아 있는 연산자를 모두 pop하여 출력한다.
+   *  스택 밖의 왼쪽 괄호는 우선 순위가 가장 높으며, 스택 안의 왼쪽 괄호는 우선 순위가 가장 낮다.
+
+**step2 후위 표기법의 수식을 스택을 이용하여 계산**
+
+1. 피연산자를 만나면 스택에 push한다.
+2. 연산자를 만나면 필요한 만큼의 피연산자를 스택에서 pop하여 연산하고, 연산겨로가를 다시 스택에 push한다.
+3. 수식이 끝나면, 마지막으로 스택을 pop하여 출력한다.
+
+
+
+### 백트래킹
+
+**DFS와 BFS에 한단계를 추가한 것**
+
+백트래킹(Backtracking) 기법은 해를 찾는 도중에 '막히면'(즉, 해가 아니면) 되돌아가서 다시 해를 찾아가는 기법이다.
+
+* 탐색과정 중에 어떤 조건에 걸려 만족시키지 못하여 멈추면
+
+백트래킹 기법은 최적화(optimization)문제와 결정(decision)문제를 해결할 수 있다.
+
+결정 문제: 문제의 조건을 만족하는 해가 존재하는지의 여부를 'yes' 또는 'no'가 답하는 문제
+
+* 미로 찾기
+* n-Queen문제
+* Map coloring
+* 부분 집합의 합(Subset Sum) 문제 등
+
+
+
+**백트래킹과 깊이우선탐색과의 차이**
+
+* 어떤 노드에서 출발하는 경로가 해결책으로 이어질 것 같지 않으면 더 이상 그 경로를 따라가지 않음으로써 시도의 횟수를 줄인다. (Prunning 가지치기)
+* 깊이우선탐색이 모든 경로를 추적하는데 비해 백트래킹은 불필요한 경로를 조기에 차단한다.
+* 깊이우선탐색을 가하기에는 경우의 수가 너무 많을때 즉, N! 가지의 경우의 수를 가진 문제에 대해 깊이우선탐색을 가하면 당연히 처리 불가능한 문제이다.
+* 백트래킹 알고리즘을 적용하면 일반적으로 경우의 수가 줄어들지만 이 역시 최악의 경우에는 여전히 지수함수 시간(Exponential Time)을 요하므로 처리가 불가능하다.
+
+**모든 후보를 검사?**
+
+No
+
+
+
+**백트래킹 기법**
+
+* 어떤 노드의 유망성을 점검한 후에 유망(promising)하지 않다고 결정되면 그 노드의 부모로 되돌아가(backtracking) 다음 자식 노드로 간다.
+* 어떤 노드를 방문하였을 때 그 노드를 포함한 경로가 해답이 될 수 없으면 그 노드는 유망하지 않다고 하며, 반대로 해답의 가능성이 있으면 유망하다고 한다.
+* **가지치기(prunning)**: 유망하지 않은 노드가 포함되는 경로는 더 이상 고려하지 않는다.
+
+
+
+**백트래킹을 이용한 알고리즘은 다음과 같은 절차로 진행된다.**
+
+1. 상태 공간 트리의 깊이 우선 검색을 실시한다.
+2. 각 노드가 유망한지를 점검한다.
+3. 만일 그 노드가 유망하지 않으면, 그 노드의 부모 노드로 돌아가서 검색을 계속한다.
+
+
+
+#### 부분집합 구하기
+
+(재귀-call stack 사용, 차근차근 함수의 순서 확인)
+
+어떤 집합의 공집합과 자기자신을 포함한 모든 부분집합을 powerset이라고 하며 구하고자 하는 어떤 집합의 원소 개수가 n일 경우 부분집합의 개수는 2**n개 이다.
+
+**백트래킹 기법으로 powerset을 구해보자.**
+
+* 앞에서 설명한 일반적인 백트래킹 접근 방법을 이용한다.
+* n개의 원소가 들어있는 집합의 2**n개의 부분집합을 만들 때는 true 또는 false값을 가지는 항목들로 구성된 n개의 배열을 만드는 방법을 이용한다.
+* 여기서 배열의 i번째 항목은 i번째의 원소가 부분집합의 값인지 아닌지를 나타내는 값이다.
+
+
+
+**각 원소가 부분집합에 포함되었는지를 loop 이용하여 확인하고 부분집합을 생성하는 방법**
+
+```python
+bit = [0,0,0,0]
+for i in range(2):
+    bit[0] = i
+    for j in range(2):
+        bit[1] = j
+        for k in range(2):
+            bit[2] = k
+            for l in range(2):
+                bit[3] = l
+                print(bit)
+```
+
+
+
+**powerset을 구하는 백트래킹 알고리즘(Youtube)**
+
+```python
+def backtrack(a, k, input):
+    c = [0] * MAXCANDIDATES
+
+    if k == input:
+        pocess_solution(a, k)
+    else:
+        k += 1
+        for i in range(ncandidates):
+            a[k] = c[i]
+            backtrack(a, k, input)
+            
+def construct_candidates(a, k, input, c):
+    c[0] = True
+    c[1] = False
+    return 2
+MAXCANDIDATES = 2
+NMAX = 4
+a = [0] *NMAX
+backtrack(a, 0, 3)
+```
+
+
+
+**부분집합(Webex)**
+
+```python
+def f(i, r):
+    # 멈추는 조건
+    if i==r: 
+        print(bit)
+        return
+
+    bit[i] = 0
+    f(i+1,r)
+    bit[i] = 1
+    f(i+1,r)
+
+
+N = 4
+lst = list(range(1,N))
+bit = [0]*N
+f(0, N)
+```
+
+
+
+#### 순열 구하기
+
+동일한 숫자가 포함되지 않았을 때, 각 자리 수 별로 loop을 이용해 구현할 수 있다.
+
+```python
+for i1 in range(1,4):
+    for i2 in range(1,4):
+        if i2 != i1:
+            for i3 in range(1,4):
+                if i3 != and i3 != i2:
+                    print(i1, i2, i3)
+```
+
+
+
+**백트래킹을 이용하여 순열 구하기**
+
+접근 방법은 앞의 부분집합을 구하는 방법과 유사
+
+```python
+def backtrack(a, k, input):
+    global MAXCANDIDATES
+    c = [0] * MAXCANDIDATES
+
+    if k == input:
+        for i in range(1, k+1):
+            print(a[i], end=" ")
+            print()
+    else:
+        k += 1
+        ncandidates = construct_candidates(a, k, input, c)
+        for i in range(ncandidates):
+            a[k] = c[i]
+            backtrack(a, k, input)
+def construct_candidates(a, k, input, c):
+    in_perm = [False] * NMAX
+
+    for i in range(1, k):
+        in_perm[a[i]] = True
+
+    ncandidates = 0
+    for i in range(1, input+1):
+        if in_perm[i] == False:
+            c[ncandidates] = i
+            ncandidates += 1
+    return ncandidates
+```
+
+
+
+[참고] 부분 집합의 합
+
+i원소의 포함 여부를 결정하면 i까지의 부분 집합의 합 si를 결정할 수 있다.
+
+si-1이 찾고자 하는 부분집합의 합보다 크면 남은 원소를 고려할 필요가 없다.
+
+1. 부분 집합의 합 이전에 부분집합을 만들 수 있어야 한다.
+2. 합을 찾아 찍는다.
+
+* 추가 고려사항
+  * 남은 원소의 합을 다 더해도 찾는 값 T 미만인 경우 중단
+
+```python
+def f(i, N, temp_sum): # i 부분집합에 포함될지 결정할 원소의 인덱스, N 전체 원소개수, K 찾는 합
+    if i==N:
+        print(bit)
+    else:
+        bit[i] = 1
+        f(i+1, N, temp_sum)
+        bit[i] = 0
+        f(i+1, N, temp_sum)
+    return
+
+N = 10
+a = [x for x in range(1, N+1)]
+bit  = [0]*N
+cnt = 0
+f(0, N, 55)
+print('cnt =', cnt)
+```
+
+
+
+[참고] 순열
+
+```python
+def f(i, N): # 중복있음 i 부분집합에 포함될지 결정할 원소의 인덱스, N 전체 원소개수
+    if i==N:
+        print(bit)
+    else:
+        bit[i] = 0
+        f(i+1, N)
+        bit[i] = 1
+        f(i+1, N)
+        bit[i] = 2
+        f(i+1, N)
+        bit[i] = 3
+        f(i+1, N)
+    return
+
+def real(i, N): # 중복없음 i 부분집합에 포함될지 결정할 원소의 인덱스, N 전체 원소개수
+    if i==N:
+        print(bit)
+        return
+    else:
+
+        for n in range(4):
+            if n not in bit[0:i]:
+                bit[i] = n
+                bit[i] = n
+                real(i + 1, N)
+    return
+
+def ncr(i,N):
+    if i==N:
+        print(bit[:N])
+        return
+    else:
+        for n in range(4):
+            if n not in bit[0:i]:
+                bit[i] = n
+                ncr(i+1, N)
+
+
+N = 4
+a = [x for x in range(1, N+1)]
+bit = [0]*N
+cnt = 0
+real(0, N)
+ncr(0, N-1)
+print('cnt =', cnt)
+```
+
+
+
+### 분할 정복 알고리즘
+
+설계 전략
+
+* 분할(Divide):  해결할 문제를 여러 개의 작은 부분으로 나눈다.
+* 정복(Conquer): 나눈 작은 문제를 각각 해결한다.
+* 통합(Combine): (필요하다면) 해결된 해답을 모은다.
+
+
+
+#### 거듭 제곱(Exponentiation)
+
+분할 정복 기반의 알고리즘: O(log2n)
+
+```python
+def Power(Base, Exponent):
+    if Base == 0:
+        return 1
+    result = 1 # Base^0은 1이므로
+    for i in range(Exponent):
+        result += Base
+    return result
+```
+
+C**n
+
+* C*(n/2) * C*(n/2)				n은 짝수
+* C*(n-1)/2 * C*(n-1)/2 * C   n은 홀수
+
+n이 커지면 계산량이 줄게 된다.
+
+
+
+```python
+def Power(Base, Exponent):
+    if Exponent == 0 or Base == 0:
+        return 1
+    if Exponent%2 == 0:
+        NewBase = Power(Base, Exponent/2)
+        return NewBase * NewBase
+    else:
+        NewBase = Power(Base, (Exponent-1)/2)
+        return (NewBase * NewBase) * Base
+```
+
+
+
+### 퀵 정렬
+
+주어진 배열을 두 개로 분할하고, 각각을 정렬한다.
+
+
+
+합병정렬과 다른 점
+
+1. 합병정렬은 그냥 두 부분을 나누는 반면에, 퀵정렬은 분할할 때, 기준 아이템(pivot item) 중심으로, 이보다 작은 것은 왼편, 큰 것은 오른편에 위치시킨다.
+2. 각 부분 정렬이 끝난 후, 합병정렬은 '합병'이란 후처리 작업이 필요하나, 퀵정렬은 필요로 하지 않는다.
+
+* 퀵정렬의 최악의 시간 복잡도는 O(n**2)로, 합병정렬에 비해 좋지 못하다.
+* 퀵정렬의 평균 복잡도는 nlogn이기 때문에 "빠른"정렬이라고 한다.
+
+```python
+def quickSort(a, begin, end):
+    if begin < end:
+        p = partition(a, begin, end)
+        quickSort(a, begin, p-1)
+        quickSort(a, p+1, end)
+def partition(a, begin, end):
+    pivot = (begin + end) // 2
+    L = begin
+    R = end
+    while L < R:
+        while(L<R and a[L]<a[pivot]):
+            L += 1
+        while(L<R and a[R]>=[pivot]):
+            R -= 1
+        if L<R:
+            if L==pivot:
+                pivot = R
+                a[L], a[R] = a[R], a[L]
+    a[pivot], a[R] =  a[R], a[pivot]
+    return R
 ```
 
