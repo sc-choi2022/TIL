@@ -105,7 +105,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('article')
+    path('article'),
 ]
 ```
 
@@ -302,3 +302,19 @@ catch.html **後**
   <a href="{% url 'throw' %}">다시 던질게</a>
 {% endblock content %}
 ```
+
+
+
+venv는 git으로 관리하지 않는다.
+
+* git init을 하고 add 하기 전에 .gitignore를 사용하여 관리하지 않겠다고 말해준다.
+
+대신, requirements.tst를 사용하여 라이브러리 목록만 관리한다.
+
+* pip freeze > requirements.txt
+
+명령어를 사용하여 라이브러리 목록을 저장하고
+
+* pip install -r requirements.txt
+
+명령어를 사용하여 저장된 라이브러리들을 다운받는다.
