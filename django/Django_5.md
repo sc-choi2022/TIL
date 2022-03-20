@@ -405,7 +405,7 @@ from django.urls import path
 from . import views
 
 url_patterns = [
-    path('int:<pk>/', views, name='detail'),
+    path('<int:pk>/', views, name='detail'),
 ]
 ```
 
@@ -692,7 +692,7 @@ Model
 
 Database
 
-* 체계화된 데이터의 모입(집합)
+* 체계화된 데이터의 모임(집합)
 
 
 
