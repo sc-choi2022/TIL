@@ -83,3 +83,180 @@ def index(request):
 * 예를 들어, 사진 파일은 자원이고 파일 경로는 웹 주소라고 한다.
 
 즉, 웹 서버는 요청 받은 URL로 서버에 존재하는 정적 자원(static resource)를 제공한다.
+
+
+
+##### Static file
+
+정적 파일
+
+응답할 때 별도의 처리 없이 파일 내용을 그대로 보여주면 되는 파일
+
+* 사용자의 요청에 따라 내용이 바뀌는 것이 아니라 요청한 것을 그래도 보여주는 파일
+
+예를 들어, 웹 서버는 일반적으로 이미지, 자바 스크립트 또는 CSS와 같은 미리 준비된 추가 파일(움직이지 않는)을 제공해야 한다.
+
+파일 자체가 고정되어 있고, 서비스 중에도 추가되거나 변경되지 않고 고정되어 있다.
+
+Django에서는 이러한 파일들을 "Static file"이라고 한다.
+
+* Django는 staticfiles 앱을 통해 정적 파일과 관련된 기능을 제공한다.
+
+
+
+##### Static file 구성
+
+1. django.contrib.staticfiles가 INSTALLED_APPS에 포함되어 있는지 확인한다.
+
+2. settings.py에서 STATIC_URL을 정의한다.
+
+3. 템플릿에서 static 템풀릿 태그를 사용하여 지정된 상대경로에 대한 URL을 빌드한다.
+
+   ```django
+   {% load static %}
+   <img src="{% static 'my_app/example.jpg' %}" alt="My image">
+   ```
+
+4. 앱의 static 디렉토리에 정적 파일을 저장
+
+   * 예시) my_app/static/my_app/example.jpg
+
+
+
+#### The staticfiles app
+
+**STATICFILES_DIRS**
+
+* 'app/static/' 디렉토리 경로(기본 경로)를 사용하는 것외에 추가적인 정적 파일 경로 목록을 정의하는 리스트
+* 추가 파일 디렉토리에 대한 전체 경로를 포함하는 문자열 목록으로 작성되어야 한다.
+
+```python
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+```
+
+
+
+##### STATIC_URL
+
+STATIC_ROOT에 있는 정적 파일을 참조할 떄 사용할 URL
+
+* 개발 단계에서는 실제 정적 파일들이 저장되어 있는 'app/static/' 경로(기본 경로) 및 STATICFILES_DIRS에 정의된 추가 경로들을 탐색한다.
+* 실제 파일이나 디렉토리가 아니며, URL로만 존재한다.
+* 비어있지 않은 값으로 설정한다면 반드시 slash(/)로 끝나야 한다.
+
+```python
+STATIC_URL = '/static/'
+```
+
+
+
+##### STATIC_ROOT
+
+collectstatic이 배포를 위해 정적 파일을 수집하는 디렉토리의 절대 경로
+
+django 프로젝트에서 사용하는 모든 정적 파일을 한 곳에 모아 넣는 경로
+
+개발 과정에서 settings.py의 DEBUG 값이 True로 설정되어 있으면 해당 값은 사용되지 않는다.
+
+* 직접 작성하지 않으면 django 프로젝트에서는 settings.py에 작성되어 있지 않는다.
+
+실 서비스 환경(배포 환경)에서 django의 모든 정적 파일을 다른 웹 서버가 직접 제공하기 위한 것이다.
+
+
+
+cf)
+
+\# SECURITY WARINING: don't run with debug turned on in production!
+
+DEBUG = True(개발 단계에서 runserver했을 때 오류와 코드를 보여주는 것)
+
+DEBUG = False (배포시 내부코드를 보여주면 안되기 때문에 배포때에는 False로 만든다.)
+
+
+
+#### [참고] collectstatic
+
+STATIC_ROOT에 정적 파일을 수집
+
+
+
+STATIC_ROOT 작성
+
+```python
+STATIC_URL = '/static/'
+# STATIC_URL 아래
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+```
+
+
+
+collectstatic 명령어
+
+```bash
+$ python manage.py collectstatic
+```
+
+
+
+#### Django template tag
+
+**load**
+
+* 사용자 정의 템플릿 태그 세트를 로드(load)
+* 로드하는 라이브러리, 패키지에 등록된 모든 태그와 필터를 불러온다.
+
+
+
+**static**
+
+* STATIC_ROOT에 저장된 정적 파일에 연결한다.
+
+```django
+{% load static %}
+
+<img src="{% static 'my_app/example.jpg' %}" alt="My image">
+```
+
+
+
+#### 정적 파일 사용하기
+
+기본 경로
+
+app/static/app
+
+template에서 경로 참조
+
+```django
+<!-- articles/index.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <img src="{% static 'articles/sample-img-1.jpg' %}" alt="sample-img">
+  <h1>INDEX</h1>
+{% endblock content %}
+```
+
+정적 파일 위치 및 추가 경로 작성
+
+```python
+# settings.py
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+```
+
+```html
+<!-- base.html -->
+{% load static %}
+<!DOCTYPE html>
+	...
+  <img src="{% static 'images/sample-img-2.jpg' %}" alt="sample-img-2">
+{% block content %}
+{% endblock content %}
+```
+
