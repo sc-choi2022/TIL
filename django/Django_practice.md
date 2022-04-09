@@ -309,7 +309,7 @@ venv는 git으로 관리하지 않는다.
 
 * git init을 하고 add 하기 전에 .gitignore를 사용하여 관리하지 않겠다고 말해준다.
 
-대신, requirements.tst를 사용하여 라이브러리 목록만 관리한다.
+대신, requirements.txt를 사용하여 라이브러리 목록만 관리한다.
 
 * pip freeze > requirements.txt
 
