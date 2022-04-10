@@ -27,7 +27,45 @@ def func(idx, n, r, res):
 func(0, 7, 3, [])
 ```
 
+ ```python
+ lst = [1, 2, 3, 4, 5]
  
+ def func(combi):
+     if len(combi) == r:
+         print(combi)
+         return
+     
+     if combi:
+     	tmp_max = max(combi)
+         
+     for i in lst:        
+         if i not in combi:
+             if combi and i <= tmp_max:
+                 continue
+ 			combi.append(i)
+             func(combi)
+             combi.pop()
+             
+ func([])            
+ ```
+
+```python
+lst = [1, 2, 3, 4, 5]
+
+def combi2(combi, idx):
+    if len(combi) == r:
+        print(combi, idx)
+        return
+    
+    for i in range(idx + 1, len(lst)):
+        combi.append(lst[i])
+        combi2(combi, i)
+        combi.pop()
+            
+combi2([], 0)
+```
+
+
 
 중복조합(*n*H*r*):
 
@@ -54,6 +92,44 @@ def func(idx, n, r, res):
         
 
 func(0, 7, 3, [])
+```
+
+```python
+lst = [1, 2, 3, 4, 5]
+
+def func(combi):
+    if len(combi) == r:
+        print(combi)
+        return
+    
+    if combi:
+    	tmp_max = max(combi)
+        
+    for i in lst:        
+        if i not in combi:
+            if combi and i < tmp_max:	# 조합의 코드에서 =가 없다면 중복조합
+                continue
+			combi.append(i)
+            func(combi)
+            combi.pop()
+            
+func([])            
+```
+
+```python
+lst = [1, 2, 3, 4, 5]
+
+def combi2(combi, idx):
+    if len(combi) == r:
+        print(combi, idx)
+        return
+    
+    for i in range(idx, len(lst)):
+        combi.append(lst[i])
+        combi2(combi, i)
+        combi.pop()
+            
+combi2([], 0)
 ```
 
 
@@ -155,6 +231,23 @@ ncr(0, N-1)
 print('cnt =', cnt)
 ```
 
+```python
+lst = [1, 2, 3, 4, 5]
+
+r = 3
+
+def func(perm):
+    if len(perm) == r:
+        print(perm)
+        return
+    
+    for i in lst:
+        if i not in perm:
+            perm.append(i)
+            func(perm)
+            perm.pop()
+```
+
 
 
 중복 순열
@@ -175,6 +268,22 @@ def f(i, N): # 중복있음 i 부분집합에 포함될지 결정할 원소의 �
         bit[i] = 3
         f(i+1, N)
     return
+```
+
+```python
+lst = [1, 2, 3, 4, 5]
+
+r = 3
+
+def func(perm):
+    if len(perm) == r:
+        print(perm)
+        return
+    
+    for i in lst:
+        perm.append(i)
+        func(perm)
+        perm.pop()
 ```
 
 
