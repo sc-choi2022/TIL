@@ -155,6 +155,49 @@ models 모듈을 통해 어떠한 타입의 DB 컬럼을 정의할 것인지 정
 * max_length 옵션 작성시 자동 양식 필드인 <u>textarea 위젯에 반영은 되지만 모델과 데이터베이스 수준에는 적용되지 않는다</u>.
   * max_length 사용은 CharField에서 사용해야한다.
 
+#### 
+
+#### Custom User 모델 정의하기
+
+AbstractUser를 상속받아 새로운 User 모델 작성
+
+```python
+# accounts/models.py
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class User(AbstractUser):
+    pass
+```
+
+기존에 Django가 사용하는 User모델이었던 auth 앱의 User모델을 accounts앱의 User모델을 사용하도록 변경
+
+```python
+# project/settings.py
+
+AUTO_USER_MODEL = 'accounts.User'
+```
+
+admin site에 Custom User 모델 등록
+
+```python
+# accounts/admin.py
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+
+admin.site.register(User, UserAdmin)
+```
+
+프로젝트 중간에 진행한다면 데이터베이스 초기화 후 마이그레이션 진행
+
+* db.sqlite3 파일 삭제
+* migrations 파일 모두 삭제 (파일명에 숫자가 붙은 파일만 삭제)
+
+```bash
+$ python manage.py makemigrations
+$ python manage.py migrate
+```
+
 
 
 ## Migrations
