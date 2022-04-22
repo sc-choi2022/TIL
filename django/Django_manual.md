@@ -30,7 +30,7 @@ $ git push -u origin master
 
 ## 가상환경, Django
 
-첫 add를 하기 전에 .ignore 생성
+첫 add를 하기 전에 .gitignore 생성
 
 https://www.toptal.com/developers/gitignore
 
@@ -445,7 +445,6 @@ models.py에 정의한 \_\_str\_\_의 형태로 객체가 표현된다.
 
 ```python
 # articles/admin.py
-
 from django.contrib import admin
 from .models import Article
 
