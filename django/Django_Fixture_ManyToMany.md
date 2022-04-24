@@ -16,6 +16,22 @@ $ python manage.py loaddata movies/actors.json movies/movies.json movies/reviews
 
 
 
+### dumpdata 
+
+```bash
+$ python manage.py dumpdata --indent 4 movies.actor > actors.json
+$ python manage.py dumpdata --indent 4 movies.movie > movies.json
+$ python manage.py dumpdata --indent 4 movies.review > reviews.json
+```
+
+**--indent 4**: option indent data 4칸
+
+**movies.actor**: movies - app name, actor - model name
+
+**actors.json**: 추출 데이터명
+
+ 
+
 ## Model
 
 A. 모델 클래스 Actor는 다음과 같은 정보를 저장합니다.
