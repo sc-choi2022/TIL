@@ -473,7 +473,7 @@ console.log(greeting)		// 5. '안녕하세요' 출력
 * 다른 변수에 복사할 때 **참조 값이 복사된다.**
 
 ```javascript
-const message = ['안녕하세요']	// 1. message 선언 및 할당
+const message = ['안녕하세요']	 // 1. message 선언 및 할당
 const greeting = message		// 2. greeting에 message 복사
 console.log(greeting)			// 3. ['안녕하세요'] 출력
 
@@ -740,7 +740,7 @@ console.log(a === b)			// false
 
 const c = 1
 const d = true
-console.loge(c === d)		// false
+console.loge(c === d)			// false
 ```
 
 
@@ -852,7 +852,6 @@ if (nation === 'Korea') {
 } else {
     console.log('Hello!')
 }
-
 // 안녕하세요!
 ```
 
@@ -1112,7 +1111,6 @@ for (let nation in capitals){
 for (let nation in capitals){
     console.log(`${nation}의 수도는 ${capitals.nation}`)
 }
-
 // korea의 수도는 undefined
 // france의 수도는 undefined
 // USA의 수도는 undefined
