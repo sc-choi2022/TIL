@@ -182,6 +182,7 @@ admin site에 Custom User 모델 등록
 
 ```python
 # accounts/admin.py
+from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User
 
