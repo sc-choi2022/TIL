@@ -1039,3 +1039,105 @@ const routes = [
 | /user/:userName                    | /user/john            | { username: 'john'}                      |
 | /user/:userName/article/:articleId | /user/john/article/12 | { username: 'john',<br />articleId: 12 } |
 
+
+
+TheLotto.vue 예시
+
+**index.js**
+
+```js
+import LottoView from '../views/LottoView.vue'
+const routes = [
+  {
+    path: '/lotto/:lottoNum',
+    name: 'lotto',
+    component: LottoView,
+  }
+]
+```
+
+**LottoView.vue**
+
+```vue
+<template>
+  <div>
+    <h1>로또</h1>
+    <button @click="getLottoNumber">Get Lucky Numbers</button>
+    <p>{{ numbers }}</p>
+  </div>
+</template>
+
+<script>
+import _ from 'lodash'
+export default {
+  name: 'LottoView',
+  data: function(){
+    return {
+      numbers: ''
+    }
+  },
+  methods: {
+    getLottoNumber(){
+      this.numbers = _.sampleSize(_.range(1, 46), this.$route.params.lottoNum)
+    }
+  }
+}
+</script>
+```
+
+
+
+**App.vue**
+
+```vue
+<template>
+  <div id="app">
+    <nav>
+      <router-link :to="{ name: 'lunch' }">Lunch</router-link> |
+      <router-link :to="{ name: 'lotto', params: { lottoNum: 6} }">Lotto</router-link>
+    </nav>
+    <router-view/>
+  </div>
+</template>
+```
+
+
+
+#### components와 views
+
+기본적으로 작성된 구조에서 components폴더와 views 폴더 내부에 각기 다른 컴포넌트가 존재하게 된다.
+
+컴포넌트를 작성해 갈 때 정해진 구조가 있는 것은 아니며, 주로 아래와 같이 구조화하여 사용한다.
+
+**App.vue**
+
+* 최상위 컴포넌트
+
+**views/**
+
+* router(index.js)에 매핑되는 컴포넌트를 모아두는 폴더
+* 예) App 컴포넌트 냊부에 AboutView & HomeView 컴포넌트 등록
+
+**components/**
+
+* router에 매핑된 컴포넌트 내부에 작성하는 컴포넌트를 모아두는 폴더
+* 예) Home 컴포넌트 내부에 HelloWorld 컴포넌트 등록
+
+
+
+#### Vue Router가 필요한 이유
+
+1. SPA 등장 이전
+   * 서버가 모든 라우팅을 통제
+   * 요청 경로에 맞는 HTML를 제공
+2. SPA 등장 이후
+   * 서버는 index.html하나만 제공
+   * 이후 모든 처리는 HTML 위에서 JS 코드를 활용해 진행
+   * 즉, 요청에 대한 처리를 더 이상 버가 하지 않는다(할 필요가 없어졌다.).
+3. 라우팅 처리 차이
+   * SSR
+     * 라우팅에 대한 결정권을 서버가 가진다.
+   * CSR
+     * 클라이언트는 더 이상 서버로 요청을 보내지 않고 응답받는 HTML 문서안에서 주소가 변경되면 특정 주소에 맞는 컴포넌트를 렌더링한다.
+     * 라우팅에 대한 결정권을 클라이언트가 가진다.
+   * 결국 Vue Router는 라우팅의 결정권을 가진 Vue.js에서 라우팅을 편리하게 할 수 있는 Tool을 제공해주는 라이브러리
