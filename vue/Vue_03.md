@@ -586,7 +586,7 @@ export default {
 import axios from 'axios'
 import TheSearchBar from './components/TheSearchBar.vue'
 import VideoList from './components/VideoList.vue'
-const API_KEY = 'AIzaSyC3u0Im-2vcGFbZzNbEQbXXlceDW1gxefc'
+const API_KEY = ''
 const API_URL = 'https://www.googleapis.com/youtube/v3/search'
 
 export default {
@@ -643,7 +643,7 @@ import axios from 'axios'
 import TheSearchBar from './components/TheSearchBar.vue'
 import VideoList from './components/VideoList.vue'
 import VideoDetail from './components/VideoDetail.vue'
-const API_KEY = 'AIzaSyC3u0Im-2vcGFbZzNbEQbXXlceDW1gxefc'
+const API_KEY = ''
 const API_URL = 'https://www.googleapis.com/youtube/v3/search'
 
 export default {
