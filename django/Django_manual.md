@@ -155,7 +155,7 @@ models 모듈을 통해 어떠한 타입의 DB 컬럼을 정의할 것인지 정
 * max_length 옵션 작성시 자동 양식 필드인 <u>textarea 위젯에 반영은 되지만 모델과 데이터베이스 수준에는 적용되지 않는다</u>.
   * max_length 사용은 CharField에서 사용해야한다.
 
-#### 
+
 
 #### Custom User 모델 정의하기
 
@@ -175,7 +175,7 @@ class User(AbstractUser):
 ```python
 # project/settings.py
 
-AUTO_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 ```
 
 admin site에 Custom User 모델 등록
