@@ -500,16 +500,11 @@ router.beforeEach((to, from, next) => {
 
 ## Vuex - Component 구성
 
-### accounts Login
-
-#### views/LoginView.vue
-
-```vue
-```
-
-
+### accounts 사전준비
 
 #### store/modules/accounts.js
+
+##### mutation
 
 ```js
 import router from '@/router'
@@ -528,7 +523,99 @@ export default {
   getters: {},
 
   mutations: {
-    여기 작성
+    SET_TOKEN: (state, token) => state.token = token,
+    SET_CURRENT_USER: (state, user) => state.currentUser = user,
+    SET_PROFILE: (state, profile) => state.profile = profile,
+    SET_AUTH_ERROR: (state, error) => state.authError = error
+  },
+}
+```
+
+
+
+##### getters
+
+```js
+import router from '@/router'
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  // state는 직접 접근하지 않겠다!
+  // 생각해서 작성해야하는 부분
+  state: {
+    token: '',
+    currentUser: {},
+    profile: {},
+    authError: null,
+  },
+
+  // 모든 state는 getters 를 통해서 접근하겠다.
+  getters: {
+    isLoggedIn: state => !!state.token,
+    currentUser: state => state.currentUser,
+    profile: state => state.profile,
+    authError: state => state.authError,
+    authHeader: state => ({ Authorization: `Token ${state.token}`})
+  },
+
+  mutations: {
+    SET_TOKEN: (state, token) => state.token = token,
+    SET_CURRENT_USER: (state, user) => state.currentUser = user,
+    SET_PROFILE: (state, profile) => state.profile = profile,
+    SET_AUTH_ERROR: (state, error) => state.authError = error
+  },
+}
+```
+
+:heavy_check_mark: LoginView.vue components에서 꺼낼 때 mapActions, mapGetters만 사용할 것이다.
+
+:x: mapState, mapMutations는 사용하지 않을 것이다.
+
+
+
+Vue에서 로그인 여부는 유효한 token을 가지고 있는 지 여부이다.
+
+`isLoggedIn: state => state.token` 이렇게 하면 값이 나오게 된다.
+
+우리는 이 결과를 True, False를 받고 싶다. 따라서 `isLoggedIn: state => !!state.token`로 작성한다.
+
+
+
+##### actions
+
+어떤 값을 영구저장할 때 브라우저에 저장하는 방법으로 localStorage가 있었다.
+
+**saveToken**
+
+state.token 추가
+
+localStorage에 token 추가
+
+* Login
+* Signup
+
+**removeToken**
+
+state.token ''로 변경
+
+localStorage.setItem('token')을 ''로 변경
+
+:heavy_check_mark: 반복되는 작업이기 때문에 함수로 만들었다.
+
+```js
+import router from '@/router'
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  state: {
+  },
+
+  getters: {
+  },
+
+  mutations: {
   },
 
   actions: {
@@ -537,6 +624,8 @@ export default {
       state.token 추가 
       localStorage에 token 추가
       */
+      commit('SET_TOKEN', token)
+      localStorage.setItem('token', token)
     },
 
     removeToken({ commit }) {
@@ -544,8 +633,104 @@ export default {
       state.token 삭제
       localStorage에 token 추가
       */
+      commit('SET_TOKEN', '')
+      localStorage.setItem('token', '')
     },
+  },
+}
 
+```
+
+
+
+### 각 기능을 위한 코드실습
+
+### accounts Signup
+
+#### SignupView.vue
+
+다음과 같이 요청을 보내면 key값이 출력이 된다.
+
+POST `http://127.0.0.1:8000/api/v1/accounts/signup/`
+
+Body - raw
+
+```json
+{
+    "username": "user", "password1": "1234", "password2" : "1234"
+}
+```
+
+
+
+```vue
+<template>
+  <div>
+    <h1>Signup</h1>
+
+    <form>
+      <div>
+        <label for="username">Username: </label>
+        <input type="text" id="username" required />
+      </div>
+      <div>
+        <label for="password1">Password: </label>
+        <input type="password" id="password1" required />
+      </div>
+      <div>
+        <label for="password2">Password Confirmation:</label>
+        <input type="password" id="password2" required />
+      </div>
+      <div>
+        <button>Signup</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {},
+    name: 'SignupView',
+    data() {
+      return {}
+    },
+    computed: {},
+    methods: {},
+  }
+</script>
+```
+
+
+
+#### store/modules/accounts.js
+
+##### actions
+
+`credentials`가 사용자 입력 정보
+
+axios에 필요한 것 
+
+* url
+* method
+* data
+
+```js
+import router from '@/router'
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  actions: {
+    saveToken({ commit }, token) {
+      /* 
+      state.token 추가 
+      localStorage에 token 추가
+      */
+      commit('SET_TOKEN', token)
+      localStorage.setItem('token', token)
+    },
+      
     login({ commit, dispatch }, credentials) {
       /* 
       POST: 사용자 입력정보를 login URL로 보내기
@@ -556,8 +741,357 @@ export default {
         실패하면
           에러 메시지 표시
       */
+      axios({
+        url: drf.accounts.login(),
+        method: 'post',
+        data: credentials
+      })
+        .then(res => {
+          const token = res.data.key
+          dispatch('saveToken', token)
+          router.push({ name: 'articles' })	// 메인 페이지(ArticleListView)로 이동
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
+  },
+}
+```
 
+
+
+#### SignupView.vue
+
+data의 return 값 추가
+
+`  data() { return { credentials: { username: '', password1: '', password2: '', } } }`
+
+input tag 에 v-model 추가
+
+`<input v-model="credentials.username" type="text" id="username" required/>`
+
+`<input v-model="credentials.password1" type="password" id="password1" required />`
+
+`<input v-model="credentials.password2" type="password" id="password2" required />`
+
+mapAction을 import 하고 methods 작성
+
+`import { mapActions } from 'vuex'`
+
+`methods: { ...mapActions(['signup'])}`
+
+form 에 v-on 추가
+
+`<form @submit.prevent="signup(credentials)">`
+
+```vue
+<template>
+  <div>
+    <h1>Signup</h1>
+
+    <account-error-list v-if="authError"></account-error-list>
+
+    <form @submit.prevent="signup(credentials)">
+      <div>
+        <label for="username">Username: </label>
+        <input  v-model="credentials.username" type="text" id="username" required/>
+      </div>
+      <div>
+        <label for="password1">Password: </label>
+        <input v-model="credentials.password1" type="password" id="password1" required />
+      </div>
+      <div>
+        <label for="password2">Password Confirmation:</label>
+        <input v-model="credentials.password2" type="password" id="password2" required />
+      </div>
+      <div>
+        <button>Signup</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+  import { mapActions } from 'vuex'
+  import AccountErrorList from '@/components/AccountErrorList.vue'
+
+  export default {
+    name: 'SignupView',
+    components: {},
+    data() {
+      return {
+        credentials: {
+          username: '',
+          password1: '',
+          password2: '',
+        }
+      }
+    },
+    methods: {
+      ...mapActions(['signup'])
+    },
+  }
+</script>
+```
+
+
+
+**Sign up 실패 시 error message**
+
+#### store/modules/accounts.js
+
+##### state, mutations, actions
+
+`authError`가 error message저장을 위해 만든 state
+
+mutations `SET_AUTH_ERROR`
+
+catch `console.error(err.response.data)`, `commit('SET_AUTH_ERROR', err.response.data)`
+
+```js
+import router from '@/router'
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  state: {
+    token: localStorage.getItem('token') || '' ,
+    currentUser: {},
+    profile: {},
+    authError: null,
+  },    
+  getters: {
+    isLoggedIn: state => !!state.token,
+    currentUser: state => state.currentUser,
+    profile: state => state.profile,
+    authError: state => state.authError,
+    authHeader: state => ({ Authorization: `Token ${state.token}`})
+  },
+  mutations: {
+    SET_TOKEN: (state, token) => state.token = token,
+    SET_CURRENT_USER: (state, user) => state.currentUser = user,
+    SET_PROFILE: (state, profile) => state.profile = profile,
+    SET_AUTH_ERROR: (state, error) => state.authError = error
+  },
+  actions: {
+    saveToken({ commit }, token) {
+      /* 
+      state.token 추가 
+      localStorage에 token 추가
+      */
+      commit('SET_TOKEN', token)
+      localStorage.setItem('token', token)
+    },
+      
+    login({ commit, dispatch }, credentials) {
+      /* 
+      POST: 사용자 입력정보를 login URL로 보내기
+        성공하면
+          응답 토큰 저장
+          현재 사용자 정보 받기
+          메인 페이지(ArticleListView)로 이동
+        실패하면
+          에러 메시지 표시
+      */
+      axios({
+        url: drf.accounts.login(),
+        method: 'post',
+        data: credentials
+      })
+        .then(res => {
+          const token = res.data.key
+          dispatch('saveToken', token)
+          router.push({ name: 'articles' })	// 메인 페이지(ArticleListView)로 이동
+        })
+        .catch(err => {
+          console.error(err.response.data)
+          commit('SET_AUTH_ERROR', err.response.data)
+        })
+    },
+  },
+}
+```
+
+
+
+#### AccountsErrorList.vue
+
+accounts.js의 authError를 보여주는 역할
+
+```vue
+<template>
+  <div class="account-error-list"></div>
+</template>
+
+<script>
+  export default {
+    name: 'AccountErrorList',
+    computed: {},
+  }
+</script>
+
+<style>
+  .account-error-list {
+    color: red;
+  }
+</style>
+```
+
+```vue
+<template>
+  <div class="account-error-list">
+    <p v-for="(errors, field) in authError" :key="field">
+      {{ field }}
+      <ul>
+        <li v-for="(error, idx) in errors" :key="idx">
+          {{ error }}
+        </li>
+      </ul>
+    </p>
+  </div>
+</template>
+
+<script>
+  import { mapGetters } from 'vuex'
+  
+  export default {
+    name: 'AccountErrorList',
+    computed: {
+      ...mapGetters(['authError'])
+    },
+  }
+</script>
+```
+
+
+
+#### SignupView.vue
+
+AccountsErrorList.vue를 SignupView.vue에 보여줄 것이다. (authError가 있을 때만)
+
+`import AccountErrorList from '@/components/AccountErrorList.vue'`
+
+`components: { AccountErrorList, }`
+
+`computed: { ...mapGetters(['authError'])}`
+
+`<template><div><account-error-list v-if="authError"></account-error-list></div></template>`
+
+```vue
+<template>
+  <div>
+    <h1>Signup</h1>
+    <account-error-list v-if="authError"></account-error-list>
+  </div>
+</template>
+
+<script>
+  import { mapActions, mapGetters } from 'vuex'
+  import AccountErrorList from '@/components/AccountErrorList.vue'
+
+  export default {
+    name: 'SignupView',
+    components: {
+      AccountErrorList,
+    },
+    data() {
+      return {
+        credentials: {
+          username: '',
+          password1: '',
+          password2: '',
+        }
+      }
+    },
+    computed: {
+      ...mapGetters(['authError'])
+    },
+    methods: {
+      ...mapActions(['signup'])
+    },
+  }
+</script>
+```
+
+
+
+**현재 사용자 정보 받기**
+
+127.0.0.1:8000/api/v1/accounts/을 통해서 볼수 있는 URL의
+
+127.0.0.1:8000/api/v1/accounts/profile
+
+127.0.0.1:8000/api/v1/accounts/user
+
+둘의 차이점은 profile은 A가 B,C,D에 대해서 보는 것이고 user는 A가 Token을 기반으로 본인에 대해 보는 것이다.
+
+**POSTMAN**
+
+127.0.0.1:8000/api/v1/accounts/user
+
+<u>headers(KEY: VALUE)</u>
+
+Authrization : Token 토큰 키
+
+<u>응답</u>
+
+pk, username, email, first_name, last_name
+
+#### store/modeules/accounts/js
+
+**fetchUser**
+
+actions의 fetchCurrentUser가 Token값을 기반으로 내 정보를 받아올 것이다.
+
+받은 정보로 state의 currentUser를 채워줄 것이다. 이때 mutations의 SET_CURRENT_USER를 사용한다. 
+
+```js
+export default {
+  // namespaced: true,
+
+  // state는 직접 접근하지 않겠다!
+  state: {
+    token: localStorage.getItem('token') || '' ,
+    currentUser: {},
+    profile: {},
+    authError: null,
+  },
+  getters: {
+    authHeader: state => ({ Authorization: `Token ${state.token}`})
+  },  
+  actions: {
+    fetchCurrentUser({ commit, getters, dispatch }) {
+      /*
+      GET: 사용자가 로그인 했다면(토큰이 있다면)
+        currentUserInfo URL로 요청보내기
+          성공하면
+            state.cuurentUser에 저장
+          실패하면(토큰이 잘못되었다면: Token 만료, Token이 유효하지 않다.)
+            기존 토큰 삭제
+            LoginView로 이동(다시 로그인할 수 있도록)
+      */
+      if (getters.isLoggedIn) {
+        axios({
+          url: drf.accounts.currentUserInfo(),
+          method: 'get',
+          headers: getters.authHeader,
+        })
+          .then(res => commit('SET_CURRENT_USER', res.data))
+          .catch(err => {
+            if (err.response.status === 401) {
+              dispatch('removeToken')
+              router.push({ name: 'login' })
+            }
+          })
+      }
+    },
+  }
+```
+
+**fetchCurrentUser를 signup에 추가**
+
+```js
     signup({ commit, dispatch }, credentials) {
       /* 
       POST: 사용자 입력정보를 signup URL로 보내기
@@ -568,40 +1102,23 @@ export default {
         실패하면
           에러 메시지 표시
       */
+      axios({
+        url: drf.accounts.signup(),
+        method: 'post',
+        data: credentials
+      })
+        .then(res => {
+          const token = res.data.key
+          dispatch('saveToken', token)
+          // saveToken이후에 fetchCurrentUser를 dispatch한다.
+          dispatch('fetchCurrentUser')
+          router.push({ name: 'articles' })
+        })
+        .catch(err => {
+          console.error(err.response.data)
+          commit('SET_AUTH_ERROR', err.response.data)
+        })
     },
-
-    logout({ getters, dispatch }) {
-      /* 
-      POST: token을 logout URL로 보내기
-        성공하면
-          토큰 삭제
-          사용자 알람
-          LoginView로 이동
-        실패하면
-          에러 메시지 표시
-      */
-    },
-
-    fetchCurrentUser({ commit, getters, dispatch }) {
-      /*
-      GET: 사용자가 로그인 했다면(토큰이 있다면)
-        currentUserInfo URL로 요청보내기
-          성공하면
-            state.cuurentUser에 저장
-          실패하면(토큰이 잘못되었다면)
-            기존 토큰 삭제
-            LoginView로 이동
-      */
-    },
-
-    fetchProfile({ commit, getters }, { username }) {
-      /*
-      GET: profile URL로 요청보내기
-        성공하면
-          state.profile에 저장
-      */
-    },
-  },
-}
 ```
 
+1:54:30
