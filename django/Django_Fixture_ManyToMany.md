@@ -24,6 +24,20 @@ $ python manage.py dumpdata --indent 4 movies.movie > movies.json
 $ python manage.py dumpdata --indent 4 movies.review > reviews.json
 ```
 
+반드시 위 코드로 작성해야하는 것이 아니다. 한번에 작성해줘도 된다.
+
+```bash
+$ python manage.py dumpdata --indent 4 movies > movies.json
+```
+
+UTF-8 설정을 넣어 준다면 다음 코드로 작성해야한다.
+
+```bash
+$ python -Xutf8 manage.py dumpdata --indent 4 movies > movies.json
+```
+
+
+
 **--indent 4**: option indent data 4칸
 
 **movies.actor**: movies - app name, actor - model name
