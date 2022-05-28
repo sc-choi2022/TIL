@@ -833,3 +833,5 @@ class Keyword(models.Model):
 ```
 
 ![image-20220527234046694](Django_Fixture_ManyToMany.assets/image-20220527234046694.png)
+
+**class이름_relatedname_Class의ForienKey이름**
