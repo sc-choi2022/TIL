@@ -98,7 +98,7 @@ drf.accounts.login()
 
 
 
-#### LoginViewe.vue
+#### LoginView.vue
 
 ```vue
 <template>
@@ -645,7 +645,7 @@ export default {
 
 ### 각 기능을 위한 코드실습
 
-### accounts Signup
+### 📁accounts Signup
 
 #### SignupView.vue
 
@@ -1038,7 +1038,7 @@ Authrization : Token 토큰 키
 
 pk, username, email, first_name, last_name
 
-#### store/modeules/accounts/js
+#### store/modules/accounts.js
 
 **fetchUser**
 
@@ -1058,6 +1058,8 @@ export default {
     authError: null,
   },
   getters: {
+      // 함수가 아니라 객체라면 () 로 한번더 묶어준다.
+      // { Authorization: `Token ${state.token}`} 를 ()롤 묶어준다.
     authHeader: state => ({ Authorization: `Token ${state.token}`})
   },  
   actions: {
@@ -1121,4 +1123,1188 @@ export default {
     },
 ```
 
-1:54:30
+:heavy_check_mark: Devtool의 Vue에서 state의 currentUser가 들어온 것을 확인할 수 있다.
+
+
+
+### 📁accounts Login
+
+#### store/modules/accounts.js
+
+Signup의 코드를 활용한다. 붙여넣기 이후 다음내용만 수정한다.
+
+`url: drf.accounts.login()`
+
+```js
+import router from '@/router'
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  // namespaced: true,
+
+  state: {
+    token: '',
+    currentUser: {},
+    profile: {},
+    authError: null,
+  },
+
+  getters: {},
+
+  mutations: {},
+
+  actions: {
+    saveToken({ commit }, token) {
+      /* 
+      state.token 추가 
+      localStorage에 token 추가
+      */
+    },
+    login({ commit, dispatch }, credentials) {
+      /* 
+      POST: 사용자 입력정보를 login URL로 보내기
+        성공하면
+          응답 토큰 저장
+          현재 사용자 정보 받기
+          메인 페이지(ArticleListView)로 이동
+        실패하면
+          에러 메시지 표시
+      */
+      axios({
+        url: drf.accounts.login(),
+        method: 'post',
+        data: credentials
+      })
+        .then(res => {
+          const token = res.data.key
+          dispatch('saveToken', token)
+          dispatch('fetchCurrentUser')
+          router.push({ name: 'articles' })
+        })
+        .catch(err => {
+          console.error(err.response.data)
+          commit('SET_AUTH_ERROR', err.response.data)
+        }) 
+    },
+    fetchCurrentUser({ commit, getters, dispatch }) {
+      /*
+      GET: 사용자가 로그인 했다면(토큰이 있다면)
+        currentUserInfo URL로 요청보내기
+          성공하면
+            state.cuurentUser에 저장
+          실패하면(토큰이 잘못되었다면)
+            기존 토큰 삭제
+            LoginView로 이동
+      */
+    },
+  },
+}
+```
+
+
+
+#### LoginView.vue
+
+`data() { return { credentials: { username: '', password: '', } } }`
+
+위 data에 맞추어 input에 v-model연결
+
+`<input v-model="credentials.username" type="text" id="username" required />`
+
+`<input v-model="credentials.password" type="password" id="password" required />`
+
+호출할 수 있게 form tag에 v-on추가
+
+`<form @submit.prevent="login(credentials)">`
+
+account-error-list 추가
+
+`import AccountErrorList from '@/components/AccountErrorList.vue'`
+
+`<account-error-list v-if="authError"></account-error-list>`
+
+computed와 methods 추가
+
+`import { mapActions, mapGetters } from 'vuex'`
+
+`computed: { ...mapGetters(['authError']) },`
+`methods: { ...mapActions(['login']) },`
+
+```vue
+<template>
+  <div>
+    <h1>Login</h1>
+
+    <account-error-list v-if="authError"></account-error-list>
+
+
+    <form @submit.prevent="login(credentials)">
+      <div>
+        <label for="username">username: </label>
+        <input v-model="credentials.username" type="text" id="username" required />
+      </div>
+
+      <div>
+        <label for="password">password: </label>
+        <input v-model="credentials.password" type="password" id="password" required />
+      </div>
+
+      <button>Login</button>
+    </form>
+  </div>
+</template>
+
+<script>
+  import { mapActions, mapGetters } from 'vuex'
+  import AccountErrorList from '@/components/AccountErrorList.vue'
+
+  export default {
+    name: 'LoginView',
+    components: {
+      AccountErrorList,
+    },
+    data() {
+      return {
+        credentials: {
+          username: '',
+          password: '',
+        }
+      }
+    },
+  	computed: {
+      ...mapGetters(['authError'])
+    },
+    methods: {
+      ...mapActions(['login'])
+    },
+  }
+</script>
+```
+
+:heavy_check_mark: Devtool의 Vue에서 state의 currentUser가 들어온 것을 확인할 수 있다.
+
+
+
+### 📁accounts Logout
+
+#### store/modules/accounts.js
+
+아래 코드를 logout({ getters, dispatch })안에 작성해준다.
+
+:heavy_check_mark: error가 생기면 할 것은 생각해볼 것 `console.error(err.response)`만 추가된 코드이다.
+
+:heavy_check_mark: 넘어오는 인자 res를 받지 않을 것으로 () 작성한다.
+
+```js
+import router from '@/router'
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  // namespaced: true,
+
+  state: {
+    token: '',
+    currentUser: {},
+    profile: {},
+    authError: null,
+  },
+
+  getters: {},
+
+  mutations: {},
+
+  actions: {
+    removeToken({ commit }) {
+      /* 
+      state.token 삭제
+      localStorage에 token 추가
+      */
+      commit('SET_TOKEN', '')
+      localStorage.setItem('token', '')
+    },
+      
+    logout({ getters, dispatch }) {
+      /* 
+      POST: token을 logout URL로 보내기
+        성공하면
+          토큰 삭제
+          사용자 알람
+          LoginView로 이동
+        실패하면
+          에러 메시지 표시
+      */
+      axios({
+        url: drf.accounts.logout(),
+        method: 'post',
+        // data: {},
+        headers: getters.authHeader,
+      })
+        .then(() => {						// 넘어오는 인자 res를 받지 않을 것으로 () 작성
+          dispatch('removeToken')			// Token 삭제
+          alert('성공적으로 logout!')		// 사용자 알람
+          router.push({ name: 'login' })	// LoginView로 이동
+        })
+        .error(err => {						// 실패하면
+          console.error(err.response)		// error message 표시
+        })
+    },
+  },
+}
+```
+
+
+
+#### LogoutView.vue
+
+:heavy_check_mark: created를 활용
+
+```vue
+<template>
+  <div>
+    <h1>Logout</h1>
+  </div>
+</template>
+
+<script>
+  import { mapActions, mapGetters } from 'vuex'
+
+  export default {
+    methods: {
+      ...mapActions(['logout'])
+    },
+    computed: {
+      ...mapGetters(['isLoggedIn'])
+    },
+    created() {
+      if (this.isLoggedIn) {
+        this.logout()
+      } else {
+        alert('잘못된 접근')
+        this.$router.back()
+      }
+    },
+  }
+</script>
+```
+
+ 
+
+#### store/modules/accounts.js
+
+:heavy_check_mark: state의 token을 바꿔준다.
+
+```js
+export default {
+  state: {
+    token: localStorage.getItem('token') || '' ,
+    currentUser: {},
+    profile: {},
+    authError: null,
+  },
+}    
+```
+
+
+
+### 📁accounts Profile
+
+#### ProfileView.vue
+
+```vue
+<template>
+  <div>
+    <h1>{{ profile.username }}</h1>
+
+    <h2>작성한 글</h2>
+    <ul>
+      <li v-for="article in profile.articles" :key="article.pk">
+        <router-link :to="{ name: 'article', params: { articlePk: article.pk } }">
+          {{ article.title }}
+        </router-link>
+      </li>
+    </ul>
+
+    <h2>좋아요 한 글</h2>
+    <ul>
+      <li v-for="article in profile.like_articles" :key="article.pk">
+        <router-link :to="{ name: 'article', params: { articlePk: article.pk } }">
+          {{ article.title }}
+        </router-link>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+
+
+export default {
+  name: 'ProfileView',
+  computed: {
+    ...mapGetters(['profile'])
+  },
+  methods: {
+    ...mapActions(['fetchProfile'])
+  },
+  created() {
+    // path: '/profile/:username'
+    const payload = { username: this.$route.params.username }
+    this.fetchProfile(payload)
+  },
+}
+</script>
+```
+
+
+
+#### store/modules/accounts.js
+
+```js
+import router from '@/router'
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  state: {
+    token: localStorage.getItem('token') || '' ,
+    currentUser: {},
+    profile: {},
+    authError: null,
+  },
+  // 모든 state는 getters 를 통해서 접근하겠다.
+  getters: {
+    profile: state => state.profile,
+    authHeader: state => ({ Authorization: `Token ${state.token}`})
+  },
+  mutations: {
+    SET_PROFILE: (state, profile) => state.profile = profile,
+  },
+  actions: {
+    fetchProfile({ commit, getters }, { username }) {
+      /*
+      GET: profile URL로 요청보내기
+        성공하면
+          state.profile에 저장
+      */
+      axios({
+        url: drf.accounts.profile(username),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then(res => {
+          commit('SET_PROFILE', res.data)
+        })
+    },
+  },
+}
+```
+
+
+
+#### router/index.js
+
+```js
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import store from '../store'
+import ProfileView from '@/views/ProfileView.vue'
+
+Vue.use(VueRouter)
+
+const routes = [
+  {
+    path: '/profile/:username',  // /profile/neo
+    name: 'profile',
+    component: ProfileView,
+  }, 
+]
+
+router.beforeEach((to, from, next) => {
+  // 이전 페이지에서 발생한 에러메시지 삭제
+  store.commit('SET_AUTH_ERROR', null)
+
+  const { isLoggedIn } = store.getters
+
+  const noAuthPages = ['login', 'signup']
+
+  const isAuthRequired = !noAuthPages.includes(to.name)
+
+  if (isAuthRequired && !isLoggedIn) {
+    alert('Require Login. Redirecting..')
+    next({ name: 'login' })
+  } else {
+    next()
+  }
+
+  if (!isAuthRequired && isLoggedIn) {
+    next({ name: 'articles' })
+  }
+})
+
+export default router
+```
+
+
+
+#### src/api/drf.js
+
+```js
+const HOST = 'http://localhost:8000/api/v1/'
+const ACCOUNTS = 'accounts/'
+
+export default {
+  accounts: {
+    // username으로 프로필 제공
+    profile: username => HOST + ACCOUNTS + 'profile/' + username,
+  },
+}
+```
+
+
+
+### 📁 articles Read
+
+#### src/store/index.js
+
+Modules에 추가
+
+```js
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+import articles from './modules/articles'
+import accounts from './modules/accounts'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  modules: { accounts, articles },
+})
+```
+
+:heavy_check_mark: 상황에 따라 각 module에 `namespaced: true`를 해야할 수도 있다.
+
+
+
+#### store/modules/articles.js
+
+사용할 article의 개수에 맞게 기본적인 구조를 잡아둔다.
+
+`state: { articles: [], article: {}, }`
+
+`actions: { fetchArticles({ commit, getters }){ }, fetchArticle({ commit, getters }){ }}`
+
+`mutations: { SET_ARTICLES: (state, articles) => state.articles = articles, SET_ARTICLE: (state, article) => state.article = article }`
+
+`getters: { articles: state => state.articles, article: state => state.article, }`
+
+```js
+import axios from 'axios'
+import router from '@/router'
+import drf from '@/api/drf'
+
+import _ from 'lodash'
+
+export default {
+  state: {
+    articles: [],
+    article: {},
+  },
+
+  getters: {
+    articles: state => state.articles,
+    article: state => state.article,
+  },
+
+  mutations: {
+    SET_ARTICLES: (state, articles) => state.articles = articles,
+    SET_ARTICLE: (state, article) => state.article = article,
+  },
+
+  actions: {
+    fetchArticles({ commit, getters }) {
+    },
+
+    fetchArticle({ commit, getters }) {
+    },
+  },
+}
+```
+
+
+
+내가 쓴 article인지 여부에 따라 달라지는 것이 있다.
+
+#### store/modules/articles.js
+
+```js
+export default {
+  getters: {
+    currentUser: state => state.currentUser,
+  },
+}
+```
+
+#### store/modules/articles.js
+
+`isAuthor: (state, getters) => { return state.article.user?.username === getters.currentUser.username }`
+
+단일 게시글을 선택했는지 여부
+
+`isArticle: state => !_.isEmpty(state.article)`
+
+```js
+import axios from 'axios'
+import router from '@/router'
+import drf from '@/api/drf'
+
+import _ from 'lodash'
+
+export default {
+  state: {
+    articles: [],
+    article: {},
+  },
+
+  getters: {
+    articles: state => state.articles,
+    article: state => state.article,
+	isAuthor: (state, getters) => {
+      return state.article.user?.username === getters.currentUser.username
+    },
+    isArticle: state => !_.isEmpty(state.article),
+  },
+
+  mutations: {
+    SET_ARTICLES: (state, articles) => state.articles = articles,
+    SET_ARTICLE: (state, article) => state.article = article,
+  },
+
+  actions: {
+    fetchArticles({ commit, getters }) {
+    },
+
+    fetchArticle({ commit, getters }) {
+    },
+  },
+}
+```
+
+#### 🎯 fetchArticles
+
+##### store/modules/articles.js
+
+```js
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  actions: {
+    fetchArticles({ commit, getters }) {
+      /* 게시글 목록 받아오기
+      GET: articles URL (token)
+        성공하면
+          응답으로 받은 게시글들을 state.articles에 저장
+        실패하면
+          에러 메시지 표시
+      */
+      axios({
+        url: drf.articles.articles(),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then(res => commit('SET_ARTICLES', res.data))
+        .catch(err => console.error(err.response))
+    },
+  },
+}
+```
+
+##### src/api/drf.js
+
+```js
+const HOST = 'http://localhost:8000/api/v1/'
+
+const ACCOUNTS = 'accounts/'
+const ARTICLES = 'articles/'
+const COMMENTS = 'comments/'
+
+export default {
+  articles: {
+    // /articles/
+    articles: () => HOST + ARTICLES,
+    // /articles/1/ pk값 써주는 것
+    article: articlePk => HOST + ARTICLES + `${articlePk}/`,
+  },
+}
+```
+
+##### ArticleListView.vue
+
+```vue
+<template>
+  <div>
+    <h1>Home</h1>
+    <ul>
+      <li v-for="article in articles" :key="article.pk">
+        <!-- 작성자 -->
+        {{ article.user.username }} : 
+
+        <!-- 글 이동 링크 (제목) -->
+        <router-link 
+          :to="{ name: 'article', params: {articlePk: article.pk} }">
+          {{ article.title }}
+        </router-link>
+
+        <!-- 댓글 개수/좋아요 개수 -->
+        =>
+        ({{ article.comment_count }}) | +{{ article.like_count }}
+
+      </li>
+    </ul>
+   
+  </div>
+</template>
+
+<script>
+  import { mapActions, mapGetters } from 'vuex'
+
+  export default {
+    name: 'ArticleList',
+    computed: {
+      ...mapGetters(['articles'])
+    },
+    methods: {
+      ...mapActions(['fetchArticles'])
+    },
+    created() {
+      this.fetchArticles()
+    },
+  }
+</script>
+```
+
+:heavy_check_mark: {{ article.user.username }} : 클릭 시 profile 페이지로 가게 할 수도 있다.
+
+
+
+#### 🎯 fetchArticle
+
+##### store/modules/articles.js
+
+```js
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  state: {
+    article: {},
+  },    
+  mutations: {
+    SET_ARTICLE: (state, article) => state.article = article,
+  },
+  actions: {
+    fetchArticle({ commit, getters }) {
+      /* 단일 게시글 받아오기
+      GET: article URL (token)
+        성공하면
+          응답으로 받은 게시글들을 state.articles에 저장
+        실패하면
+          단순 에러일 때는
+            에러 메시지 표시
+          404 에러일 때는
+            NotFound404 로 이동
+      */
+      axios({
+        url: drf.articles.article(3),	// 임의의 값 3
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then(res => commit('SET_ARTICLE', res.data))
+        .catch(err => console.error(err.response))
+    },
+  },
+}
+```
+
+##### src/api/drf.js
+
+:heavy_check_mark: profile과 비슷한 상황
+
+```js
+const HOST = 'http://localhost:8000/api/v1/'
+
+const ACCOUNTS = 'accounts/'
+const ARTICLES = 'articles/'
+const COMMENTS = 'comments/'
+
+export default {
+  articles: {
+    // /articles/
+    articles: () => HOST + ARTICLES,
+    // /articles/1/ pk값 써주는 것
+    article: articlePk => HOST + ARTICLES + `${articlePk}/`,
+  },
+}
+```
+
+##### ArticleDetailView.vue
+
+`data() { return { articlePk: this.$route.params.articlePk, } }` :heavy_check_mark:Dev tool의 Vue에서 확인가능
+
+`created() {this.fetchArticle(this.articlePk) }`
+
+
+
+```vue
+<template>
+  <div>
+    <h1>{{ article.title }}</h1>
+    <p>
+      {{ article.content }}
+    </p>
+  </div>
+</template>
+
+<script>
+  import { mapGetters, mapActions } from 'vuex'
+  import CommentList from '@/components/CommentList.vue'
+
+  export default {
+    name: 'ArticleDetail',
+    components: { CommentList },
+    data() {
+      return {
+        articlePk: this.$route.params.articlePk,
+      }
+    },
+    computed: {
+      ...mapGetters(['isAuthor', 'article']),
+      likeCount() {
+        return this.article.like_users?.length
+      }
+    },
+    methods: {
+      ...mapActions([ 'fetchArticle'])
+    },
+    created() {
+      this.fetchArticle(this.articlePk)
+    },
+  }
+</script>
+```
+
+
+
+##### store/modules/articles.js
+
+`fetchArticle({ commit, getters }, articlePk)`
+
+```js
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  state: {
+    article: {},
+  },    
+  mutations: {
+    SET_ARTICLE: (state, article) => state.article = article,
+  },
+  actions: {
+    fetchArticle({ commit, getters }, articlePk) {
+      axios({
+        url: drf.articles.article(articlePk),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then(res => commit('SET_ARTICLE', res.data))
+        .catch(err => console.error(err.response))
+    },
+  },
+}
+```
+
+:x: detail페이지의 그 값이 없을 때 404 error
+
+`if (err.response.status === 404) { router.push({ name: 'NotFound404' }) }`
+
+```js
+import axios from 'axios'
+import drf from '@/api/drf'
+
+export default {
+  state: {
+    article: {},
+  },    
+  mutations: {
+    SET_ARTICLE: (state, article) => state.article = article,
+  },
+  actions: {
+    fetchArticle({ commit, getters }, articlePk) {
+      axios({
+        url: drf.articles.article(articlePk),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then(res => commit('SET_ARTICLE', res.data))
+        .catch(err => {
+          console.error(err.response)
+          if (err.response.status === 404) {
+            router.push({ name: 'NotFound404' })
+          }
+        })
+    },
+  },
+}
+```
+
+
+
+### 📁articles Edit / Delete
+
+#### ArticleDetailView.vue
+
+```vue
+<template>
+  <div>
+    <!-- Article Edit/Delete UI -->
+    <div v-if="isAuthor">
+      <router-link :to="{ name: 'articleEdit', params: { articlePk } }">
+        <button>Edit</button>
+      </router-link>
+      |
+      <button @click="deleteArticle(articlePk)">Delete</button>
+    </div>
+
+    <!-- Article Like UI -->
+    <div>
+      Likeit:
+      <button
+        @click="likeArticle(articlePk)"
+      >{{ likeCount }}</button>
+    </div>
+
+    <hr />
+    <!-- Comment UI -->
+    <comment-list :comments="article.comments"></comment-list>
+
+  </div>
+</template>
+```
+
+:x: CurrentUser 반영되어있지 않은 코드이다.
+
+:heavy_check_mark: 해결하기 위해서 App.vue를 수정한다.
+
+#### App.vue
+
+```vue
+<template>
+  <div id="app">
+    <nav-bar></nav-bar>
+    <hr />
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+  import NavBar from '@/components/NavBar.vue'
+
+  import { mapActions } from 'vuex'
+
+  export default {
+    name: 'App',
+    methods: {
+      ...mapActions(['fetchCurrentUser'])
+    },
+    created() {
+      this.fetchCurrentUser()
+    }
+  }
+</script>
+```
+
+
+
+#### src/store/modules/articles.js
+
+```js
+import axios from 'axios'
+import drf from '@/api/drf'
+import router from '@/router'
+
+import _ from 'lodash'
+// import accounts from './accounts'
+
+export default {
+  // namespaced: true,
+  state: {
+    articles: [],
+    article: {},
+  },
+  mutations: {
+    SET_ARTICLES: (state, articles) => state.articles = articles,
+    SET_ARTICLE: (state, article) => state.article = article,
+    SET_ARTICLE_COMMENTS: (state, comments) => (state.article.comments = comments),
+  },
+  actions: {
+    updateArticle({ commit, getters }, { pk, title, content}) {
+      /* 게시글 수정
+      PUT: article URL (게시글 입력정보, token)
+        성공하면
+          응답으로 받은 게시글을 state.article에 저장
+          ArticleDetailView 로 이동
+        실패하면
+          에러 메시지 표시
+      */
+      axios({
+        url: drf.articles.article(pk),
+        method: 'put',
+        data: { title, content },
+        headers: getters.authHeader,
+      })
+        .then(res => {
+          commit('SET_ARTICLE', res.data)
+          router.push({
+            name: 'article',
+            params: { articlePk: getters.article.pk }
+          })
+        })
+    },
+
+    deleteArticle({ commit, getters }, articlePk) {
+      /* 게시글 삭제
+      사용자가 확인을 받고
+        DELETE: article URL (token)
+          성공하면
+            state.article 비우기
+            AritcleListView로 이동
+          실패하면
+            에러 메시지 표시
+      */
+      
+      if (confirm('정말 삭제하시겠습니까?')) {
+        axios({
+          url: drf.articles.article(articlePk),
+          method: 'delete',
+          headers: getters.authHeader,
+        })
+          .then(() => {
+            commit('SET_ARTICLE', {})
+            router.push({ name: 'articles' })
+          })
+          .catch(err => console.error(err.response))
+      }
+    },
+  },
+}
+
+```
+
+
+
+
+
+### 📁articles Like
+
+#### src/store/modules/articles.js
+
+```js
+import axios from 'axios'
+import drf from '@/api/drf'
+import router from '@/router'
+
+import _ from 'lodash'
+// import accounts from './accounts'
+
+export default {
+  // namespaced: true,
+  state: {
+    articles: [],
+    article: {},
+  },
+  mutations: {
+    SET_ARTICLE: (state, article) => state.article = article,
+  },
+  actions: {
+    likeArticle({ commit, getters }, articlePk) {
+      /* 좋아요
+      POST: likeArticle URL(token)
+        성공하면
+          state.article 갱신
+        실패하면
+          에러 메시지 표시
+      */
+      axios({
+        url: drf.articles.likeArticle(articlePk),
+        method: 'post',
+        headers: getters.authHeader,
+      })
+        // 할 때마다 객체가 온다.
+        .then(res => commit('SET_ARTICLE', res.data))
+        .catch(err => console.error(err.response))
+    },
+  },
+}
+```
+
+
+
+#### ArticleDetailView.vue
+
+```vue
+<template>
+  <div>
+    <h1>{{ article.title }}</h1>
+
+    <p>
+      {{ article.content }}
+    </p>
+    <!-- Article Like UI -->
+    <div>
+      Likeit:
+      <button
+        @click="likeArticle(articlePk)"
+      >{{ likeCount }}</button>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { mapGetters, mapActions } from 'vuex'
+  import CommentList from '@/components/CommentList.vue'
+
+  export default {
+    name: 'ArticleDetail',
+    components: { CommentList },
+    data() {
+      return {
+        articlePk: this.$route.params.articlePk,
+      }
+    },
+    methods: {
+      ...mapActions([
+        'likeArticle',
+      ])
+    },
+  }
+</script>
+```
+
+:heavy_check_mark: 좋아요를 누른것인지 아닌지를 확인하는 방법
+
+* CurrentUser의 username와 article의 like_users안의 object에 같은 username이 있는지 확인하면 된다.
+
+
+
+### 📁NavBar
+
+#### NavBar.vue
+
+:heavy_check_mark: isLoggedIn을 기준으로 진행된다.
+
+```vue
+<template>
+  <nav>
+    <ul>
+      <li>
+        <router-link :to="{ name: 'articles' }">Home</router-link>
+      </li>
+
+      <li v-if="!isLoggedIn">
+        <router-link :to="{ name: 'login' }">Login</router-link>
+      </li>
+      <li v-if="!isLoggedIn">
+        <router-link :to="{ name: 'signup' }">Signup</router-link>
+      </li>
+
+      <li v-if="isLoggedIn">
+        <router-link :to="{ name: 'articleNew' }">New</router-link>
+      </li>
+      <li v-if="isLoggedIn">
+        <router-link :to="{ name: 'profile', params: { username } }">
+          {{ currentUser.username }}'s page
+        </router-link>
+      </li>
+      <li v-if="isLoggedIn">
+        <router-link :to="{ name: 'logout' }">Logout</router-link>
+      </li>
+    </ul>
+  </nav>
+</template>
+
+<script>
+  import { mapGetters } from 'vuex'
+
+  export default {
+    name: 'NavBar',
+    computed: {
+      ...mapGetters(['isLoggedIn', 'currentUser']),
+      username() {
+        return this.currentUser.username ? this.currentUser.username : 'guest'
+      },
+    },
+  }
+</script>
+```
+
+
+
+#### App.vue
+
+```vue
+<template>
+  <div id="app">
+    <nav-bar></nav-bar>
+    <hr />
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+  import NavBar from '@/components/NavBar.vue'
+</script>
+```
+
+
+
+### 📁Navigation Gaurd
+
+#### router/index.js
+
+```js
+router.beforeEach((to, from, next) => {
+  // 이전 페이지에서 발생한 에러메시지 삭제
+  store.commit('SET_AUTH_ERROR', null)
+
+  const { isLoggedIn } = store.getters
+
+  const noAuthPages = ['login', 'signup']
+
+  const isAuthRequired = !noAuthPages.includes(to.name)
+
+  if (isAuthRequired && !isLoggedIn) {
+    alert('Require Login. Redirecting..')
+    next({ name: 'login' })
+  } else {
+    next()
+  }
+
+  if (!isAuthRequired && isLoggedIn) {
+    next({ name: 'articles' })
+  }
+})
+```
+
+
+
+### 📁Create article
+
+```vue
+
+```
+
