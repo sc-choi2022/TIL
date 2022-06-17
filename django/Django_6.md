@@ -1539,3 +1539,36 @@ http://127.0.0.1:8000/api/v1/articles/1/로 GET 요청 후 응답 확인
 
 특정 필드를 override 혹은 추가한 경우 read_only_fields shortcut으로 사용할 수 없다.
 
+
+
+:heavy_check_mark:
+
+form을 대체하는 것이 serializer이다.
+
+serializer를 사용하는 이유: msa(마이크로 서비스 아키텍처)
+
+
+
+**기억해 둘 status code**
+
+100 continue
+
+200 OK
+
+201 Created
+
+204 No Content
+
+301 Moved Permanently
+
+400 Bad Request 
+
+401 Unauthorized
+
+403 Forbidden
+
+404 No found
+
+500 Internal Server Error
+
+501 Not Implemented
