@@ -300,3 +300,230 @@ n비트를 표현할 수 있는 부호있는 정수의 범위: -2^(n-1) ~ 2^(n-1
 
 **double is default**
 
+
+
+#### 형식화된 출력 - printf()
+
+**println()의 단점 - 출력형식 지정 불가**
+
+1. 실수의 자리수 조절불가 - 소수점 n자리만 출력하려면?
+
+   ```java
+   System.out.println(10/3);	// 3
+   System.out.println(10.0/3);	// 3.33333333333.......
+   ```
+
+2. 10진수로만 출력된다. - 8진수, 16진수로 출력하려면?
+
+   ```java
+   System.out.println(0x1A); // 26
+   ```
+
+**printf()로 출력형식 지정가능**
+
+System.out.printf(지시자,)
+
+```java
+System.out.printf("%.2f", 10.0/3);`// 3.33
+System.out.printf("%d", 0x1A);	// 26
+System.out.printf("%x", 0x1);	// 1A
+```
+
+
+
+#### printf()의 지시자
+
+JavaAPI - Formatter
+
+![image-20220701203917664](Chapter2%20%EB%B3%80%EC%88%98(Variable).assets/image-20220701203917664.png)
+
+* %b, %d, %o, %x, %X : 정수
+* %f, %e, %E: 실수
+* %c, %s: 문자
+
+여러개의 지시자를 사용하는 것도 가능하다.
+
+```java
+System.out.printf("age:%d year:%d\n", 14, 2017);
+```
+
+* \n, %n: 개행문자(줄바꿈)
+
+OS에 따라 개행문자가 다를 수 있다. %는 OS에 관계없이 사용가능하다.
+
+
+
+1. 정수를 10진수, 8진수, 16진수로 출력
+
+   ```java
+   System.out.printf("%d", 15);	// 15 10진수 decimal
+   System.out.printf("%o", 15);	// 17 8진수 octal
+   System.out.printf("%x", 15);	// f 16진수 hexa
+   System.out.printf("%s", Integer.toBinaryString(15));	
+   // 정수를 이진문자열로 변경
+   // 문자열 1111을 출력
+   ```
+
+2. 8진수와 16진수에 접두사 붙이기
+
+   ```java
+   System.out.printf("%#o", 15);	// 017
+   System.out.printf("%#x", 15);	// 0xf
+   System.out.printf("%#X", 15);	// 0XF
+   ```
+
+3. 실수 출력을 위한 지시자 %f - 지수형식(%e), 간략한 형식(%g)
+
+   정밀도가 높기를 바란다면 double
+
+   ```java
+   float f = 123.4567890f;
+   System.out.printf("%f", f);	// 123.456787 정밀도로 9가 아닌 7
+   System.out.printf("%e", f);	// 1.234568e+02 반올림되어 보여짐
+   							// 값이 변하는 것은 아니다.
+   ```
+
+[]안의 숫자는 자리수
+
+```java
+System.out.printf("[%5d]%n", 10);	// [   10] 오른쪽정렬
+System.out.printf("[%-5d]%n", 10);	// [10   ] 왼쪽정렬
+System.out.printf("[%05d]%n", 10);	// [00010] 빈값을 0으로 채운다
+
+System.out.printf("d=%14.19f%n", d)	// 전체 14자리 중 소수점 아래 10자리
+System.out.printf("[%ed]%n", 1234567)	// 1234567
+```
+
+```java
+System.out.printf("[%s]%n", 	url);	// [www.naver.com]
+System.out.printf("[%20d]%n", 	url);	// [   www.naver.com]
+System.out.printf("[%-20d]%n", 	url);	// [www.naver.com   ]
+System.out.printf("[%.8s]%n",	url);	// [www.nave]
+```
+
+
+
+#### 화면에서 입력 받기 - Scanner
+
+**Scanner란?**
+
+화면으로부터 데이터를 입력받는 기능을 제공하는 클래스
+
+**Scanner를 사용하려면**
+
+1. import 추가
+
+   ```java
+   import java.util.*;
+   ```
+
+2. Scanner객체의 생성
+
+   ```java
+   Scanner scanner = new Scanner Scanner(System.in);
+   // System.in 화면으로부터 입력
+   ```
+
+3. Scanner 객체를 사용
+
+   ```java
+   int num = scanner.nextInt();	// 화면에서 입력받은 정수를 num에 저장
+   String input = scanner.nextLine();	// 화면에서 입력받은 내용을 input에 저장
+   int num = Integer.parseInt(input);	// 문자열(input)을 숫자(num)으로 변환
+   ```
+
+   숫자 -> 문자열: 숫자 + ""
+
+   문자열 -> 숫자: Integer.parseInf()
+
+```java
+import java.util.*;
+public class Hello {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner scanner = new Scanner(System.in);
+		
+		int num = scanner.nextInt();
+		int num2 = scanner.nextInt();
+		System.out.println(num);
+		System.out.println(num2);
+	}
+}
+```
+
+**입력**
+
+100 200
+
+**출력**
+
+100
+
+200
+
+
+
+#### 정수형의 오버플로우
+
+오버플로우: 표현가능한 범위를 넘는 것
+
+최대값 + 1 -> 최소값
+
+최소값 - 1 -> 최대값
+
+**10진수**
+
+9999(최대값) + 1 -> 0000(최소값)
+
+0000(최소값) - 1 -> 9999(최대값)
+
+**2진수**
+
+1111 + 1 -> 0000
+
+0000 - 1 -> 1111
+
+**부호없는 정수(4bit)**:heavy_check_mark: short
+
+15(최대값) + 1 -> 0(최소값)
+
+0(최소값) - 1 -> 15(최대값)
+
+**부호있는 정수(4bit)**:heavy_check_mark:char
+
+7(최대값) + 1 -> -8(최소값)
+
+-8(최소값) - 1 -> 7(최대값)
+
+
+
+**16bit로 표현할 수 있는 정수의 개수**: 2^16개 (65536개)
+
+**short타입의 표현범위**: -2^15 ~ 2^15-1 (-32768~32767)
+
+**char타입의 표현범위**: 0~2^16-1 (0~65535)
+
+
+
+#### 타입간의 변환방법:star:
+
+**문자와 숫자간의 변환**
+
+숫자 -> 문자: 3 + '0' -> '3'
+
+문자 -> 숫자: '3' - '0' -> 3
+
+**문자열로의 변환**
+
+숫자 -> 문자열: 3 + "" -> "3"
+
+문자 -> 문자열: '3' + "" -> "3"
+
+**문자열을 숫자로 변환**
+
+문자열 -> 숫자: 
+
+"3" -> Integer.parseInt("3") -> 3
+
+"3.4" -> Double.parseDouble("3.4") -> 3.4
