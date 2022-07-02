@@ -527,3 +527,9 @@ public class Hello {
 "3" -> Integer.parseInt("3") -> 3
 
 "3.4" -> Double.parseDouble("3.4") -> 3.4
+
+**문자열을 문자로 변환**
+
+문자열 -> 문자
+
+"3" -> "3".charAt(0)  -> '3'
