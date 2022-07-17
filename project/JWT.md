@@ -45,22 +45,28 @@ Browser(Client, 사용자), Server(서버)
 
 ### API
 **Signup API**
+
 POST/auth/signup
+
 ✔Request Data
 * uid: 회원가입 할 계정에 대한 id
 * password: 회원가입 할 계정에 대한 비밀번호
 * role: 회원가입 할 계정에 대한 역할
 * position: 회원가입 할 계정에 대한 포지션
+
 ✔Response Data
 * status: 200
 * message: Success
 * data: {}
 
 **Signin API**
+
 POST/auth/signin
+
 ✔Request Data
 * uid: 회원가입에서 기재한 id 정보
 * password: 회원가입에서 기재한 비밀번호 정보
+
 ✔Response Data
 * status
 * data
@@ -72,7 +78,9 @@ POST/auth/signin
 * message: User information matched
 
 **identification API**
+
 GET/auth/me
+
 ✔Response Data
 * status
 * data
@@ -85,7 +93,9 @@ GET/auth/me
 * message: "Success"
 
 **reissue access token API**
+
 GET/auth/me
+
 ✔Response Data
 * status: 200
 * message: Sucess
@@ -96,9 +106,11 @@ GET/auth/me
 
 ❗accessToken와 refreshToken
 **accessToken**
+
 자원에 접근할 수 있는 Token
 
 **refreshToken**
+
 accessToken을 계속 갱신 받는 것이 주 목적
 
 로그인을 한 후 두 Token을 cookie에 저장
@@ -106,15 +118,22 @@ accessToken을 계속 갱신 받는 것이 주 목적
 
 ❗
 iss: Token 발급자(issuer)
+
 sub: Token 제목(subject)
+
 aud: Token 대상자(audience)
+
 exp: Token의 만료시간(expiration), 시간은 NumericData 형식(현재시간 이후로 설정)
+
 nbf: Not Before을 의미, Token의 활성 날짜와 유사한 개념
+
 iat: Token이 발급된 시간(issued at), 이 값을 통해 토큰의 age를 판단 가능
+
 jti: JWT의 고유식별자, 중복적인 처리를 방지하기 위해 사용(일회용 토큰 사용 시 유용하다.)
 
 
 📝
+
 Navigation Gaurd을 통해 url이 변경될 때마다 Token을 Check
 Component가 변경될 때마다 Token을 Check
 axios가 발생할 때마다 interceptor을 이용하여 Token을 Check
