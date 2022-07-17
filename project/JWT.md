@@ -135,7 +135,9 @@ jti: JWT의 고유식별자, 중복적인 처리를 방지하기 위해 사용(�
 📝
 
 Navigation Gaurd을 통해 url이 변경될 때마다 Token을 Check
+
 Component가 변경될 때마다 Token을 Check
+
 axios가 발생할 때마다 interceptor을 이용하여 Token을 Check
 ```vue
 import VueCookies form 'vue-cookies';
