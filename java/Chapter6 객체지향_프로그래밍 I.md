@@ -437,5 +437,714 @@ int result = add(3, 5);
 
 ✔ 반환 타입이 void인 경우 생략가능, 컴파일러가 자동으로 추가한다.
 
-✔ 반환타입이 void가 아닌 경우, 반드시 return문 필요하다.
+✔ 반환 타입이 void가 아닌 경우, 반드시 return문 필요하다.
 
+```java
+int max(int a, int b){
+    if(a > b)
+        return b;
+}
+```
+
+위 코드는 에러가 발생한다. false일 때 return문이 없기 때문이다.
+
+
+
+#### 반환값
+
+![image-20220919123517023](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220919123517023.png)
+
+반환타입과 return 타입이 일치되거나 자동형변환이 가능해야한다.
+
+예를 들어
+
+* char
+* byte
+* short
+
+
+
+#### 호출 스택(call stack)
+
+스택(stack): 밑이 막힌 상자. 위에 차곡차곡 쌓인다.
+
+**값을 stack에 넣는 경우**
+
+![image-20220919123749161](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220919123749161.png)
+
+**값을 stack에서 꺼내는 경우**
+
+![image-20220919123841086](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220919123841086.png)
+
+
+
+호출스택(call stack)
+
+메서드 수행에 필요한 메모리가 제공되는 공간
+
+메서드가 호출되면 호출스택에 메모리 할당, 종료되면 해제된다.
+
+![image-20220919123957692](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220919123957692.png)
+
+![image-20220919124325940](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220919124325940.png)
+
+아래 있는 메서드가 위의 메서드를 호출한 것으로
+
+맨 위의 메서드 하나만 실행 중이고, 나머지는 대기중이다.
+
+![image-20220919124542053](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220919124542053.png)
+
+
+
+#### 기본형 매개변수
+
+기본형 매개변수
+
+* 변수의 값을 읽기만 할 수 있다. (read only)
+* 변경이 불가능하다.
+* 8개 종류
+
+참조형 매개변수
+
+* 변수의 값을 읽고 변경할 수 있다. (read & write)
+
+```java
+class Data { int x; }
+
+class Ex6_6 {
+    public static void main(String[] args){
+        Data d = new Data();
+        d.x = 10;
+        System.out.println("After change(d.x)");
+        System.out.println("main() : x = "+ d.x);
+    }
+    
+    static void change(int x){	// 기본형 매개변수: 읽기만 가능하다.
+        x = 1000;
+        System.out.println("change() : x = " + x);
+    }
+}
+```
+
+**결과**
+
+✔ 기본형 매개변수: 읽기만 가능하다.
+
+```
+main() : x = 10
+change() : x = 1000
+After change(d.x)
+main() : x = 10
+```
+
+
+
+#### 참조형 매개변수
+
+참조형 매개변수 - 변수의 값을 읽고 변경할 수 있다.(read & write)
+
+```java
+class Data2 { int x };
+
+class Ex6_7 {
+    public static void main(String[] args){
+        Data2 d = new Data2();
+        d.x = 10;
+        System.out.println("main() : x = " + d.x);
+        
+        change(d);
+        System.out.println("After change(d)");
+        System.out.println("main() : x = " + d.x);
+    }
+    
+    static void change(Data2 d){	// 참조형 매개변수
+        d.x = 1000;
+        System.out.println("change() : x = " + d.x);
+    }
+}
+```
+
+**결과**
+
+```
+main() : x = 10
+change() : x = 1000
+After change(d)
+main() : x = 1000
+```
+
+
+
+#### 참조형 반환타입
+
+```java
+class Data2 { int x };
+
+class Ex6_8 {
+    public static void main(String[] args){
+        Data3 d = new Data3();
+        d.x = 10;
+        
+        Data3 d2 = copy(d);
+        System.out.println("d.x ="+d.x);
+        System.out.println("d2.x=" + d2.x);
+    }
+    
+    static Data3 copy(Data3 d){
+        Data3 tmp = new Data3();	// 새로운 객체 tmp를 생성한다.
+        
+        tmp.x = d.x;	// d.x의 값을 tmp.x에 복사한다.
+        
+        return tmp;		// 반환값이 참조형인 경우 : 복사한 객체의 주소를 반환한다.
+    }
+}
+```
+
+✔ static method: 객체 생성없이 호출가능
+
+**결과**
+
+✔ 반환값이 참조형인 경우 : 복사한 객체의 주소를 반환한다.
+
+```
+d.x = 10
+d2.x = 10
+```
+
+
+
+#### static 메서드와 인스턴스 메서드
+
+```java
+class MyMath2 {
+    long a, b;			// iv 인스턴스 변수
+    
+    long add(){			// 인스턴스 메서드
+        return a + b;
+    }
+    // 클래스 메서드(static 메서드)
+    static long add(long a, long b){	// a, b 지역변수(lv)
+        return a + b;
+    }
+}
+```
+
+
+
+✔ **인스턴스 메서드**: static이 붙지 않은 method
+
+* 인스턴스 생성 후, '참조변수.메서드이름()'으로 호출
+* 인스턴스 멤버(iv, im)와 관련된 작업을 하는 메서드
+* 메서드 내에서 인스턴스 변수(iv) 사용가능
+
+✔ **클래스 메서드**: static이 붙은 method
+
+* 객체생성없이 '클래스이름.메서드이름()'으로 호출
+* 인스턴스 멤버(iv, im)와 관련없는 작업을 하는 메서드
+* 메서드 내에서 인스턴스 변수(iv) 사용불가
+
+```java
+class MyMathTest2 {
+    public static void main(String args[]){
+        System.out.println(MyMath2.add(200L, 100L));	// 클래스메서드 호출
+        MyMath2 mm = new MyMath2();		// 인스턴스 생성
+        mm.a = 200L;
+        mm.b = 100L;
+        System.out.println(mm.add());	// 인스턴스메서드 호출
+    }
+}
+```
+
+
+
+#### static을 언제 붙여야 할까?
+
+![image-20220925215430638](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220925215430638.png)
+
+인스턴스 멤버(iv, im)을 사용하지 않는 메서드에 static을 붙인다.
+
+![image-20220925215528054](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220925215528054.png)
+
+
+
+#### 메서드 간의 호출과 참조
+
+static 메서드는 인스턴스 메서드(im)를 사용할 수 없다.
+
+```java
+class TestClass {   
+    void instanceMethod(){}			// 인스턴스메서드
+    static void staticMethod(){}	// static메서드
+    
+    void instanceMethod2(){			// 인스턴스메서드
+        instanceMethod();			// 다른 인스턴스메서드를 호출한다.
+        staticMethod();				// static메서드를 호출한다.
+    }
+    
+    static void staticMethod2(){	// static메서드
+        instanceMethod();			// !!인스턴스메서드를 호출할 수 없다.
+        staticMethod();				// static메서드는 호출할 수 있다.
+    }
+}
+```
+
+
+
+static 메서드는 인스턴스 변수(iv)를 사용할 수 없다.
+
+```java
+class TestClass2 {
+    int iv;			// 인스턴스 변수
+    static int cv;	// 클래스 변수
+    
+    void instanceMethod(){			// 인스턴스 메서드
+        System.out.println(iv);		// 인스턴스 변수를 사용할 수 있다.
+        System.out.println(cv);		// 클래스 변수를 사용할 수 있다.
+    }
+    
+    static void staticMethod(){		// 클래스 메서드
+        System.out.println(iv);		// !! 인스턴스 변수를 사용할 수 없다.
+        System.out.println(cv);		// 클래스 변수를 사용할 수 있다.
+    }
+}
+```
+
+
+
+Q. static메서드는 static메서드 호출가능?
+
+**YES**
+
+Q. static메서드는 instance변수 호출가능?
+
+**NO**
+
+Q. static메서드는 instance메서드 호출가능?
+
+**NO**
+
+Q. 왜 static메서드는 인스턴스 멤버를 쓸 수 없나요?
+
+**static메서드 호출시 객체(iv묶음)가 없을 수 있기 때문이다.**
+
+
+
+#### 오버로딩(overloading)
+
+한 클래스 안에 같은 이름의 메서드 여러 개를 정의하는 것
+
+**오버로딩 성립하기 위한 3가지 조건**
+
+1. 메서드 이름이 같아야한다.
+2. 매개변수의 개수 또는 타입이 달라야 한다.
+3. 반환 타입은 영향이 없다.
+
+❗ 2번째 조건이 성립하지 않는 경우
+
+```java
+int add(int a, int b) { return a+b; }
+int add(int x, int y) { return x+y; }
+```
+
+✔ ambiguous한 경우는 확인하자
+
+예) The method add(int, long) is ambiguous for the type MyMath3
+
+
+
+✔ 오버로딩 가능한 경우의 예
+
+매개변수는 다르지만 같은 의미의 기능 수행
+
+```java
+class MyMath3 {
+    int add(int a, int b){
+        System.out.print("int add(int a, int b) - ");
+        return a+b;
+    }
+    
+    long add(long a, long b){
+        System.out.print("long add(long a, long b) - ");
+        return a+b;
+    }
+    
+    int add(int[] a){			// 배열의 모든 요소의 합을 결과로 돌려준다.
+        System.out.print("int add(int[] a) - ");
+        int result = 0;
+        for(int i=0; i<a.length; i++)
+            result += a[i];
+        return result;
+    }
+}
+```
+
+
+
+#### 생성자(constructor)
+
+인스턴스가 생성될 때마다 호출되는 **인스턴스 초기화 메서드**
+
+```java
+Time t = new Time();
+t.hour = 12;
+t.minute = 34;
+t.second = 56;
+```
+
+인스턴스 생성시 수행할 작업(iv 초기화)에 사용
+
+```java
+Time t = new Time(12, 34, 56);	// 생성자 호출
+```
+
+
+
+✔ 생성자의 이름은 클래스의 이름과 같아야 한다.
+
+✔ 리턴값이 없다. (void를 붙이지 않는다.)
+
+✔ 모든 클래스는 반드시 생성자를 가져야한다.
+
+```java
+class Card{
+    Card(){							// 매개변수 없는 생성자
+        // 인스턴스 초기화 작업
+    }
+    
+    Card(String kind, int number){	// 매개변수 있는 생성자
+        // 인스턴스 초기화 작업
+    }
+}
+```
+
+
+
+##### 기본 생성자(default constructor)
+
+매개변수가 없는 생성자
+
+```java
+클래스이름(){}	// 기본생성자
+Point(){}		// Point클래스의 기본 생성자
+```
+
+
+
+생성자가 하나도 없을때만, 컴파일러가 기본 생성자를 자동으로 추가한다.
+
+```java
+class Data_1{
+    int value;
+}
+
+class Data_2{
+    int value;
+    
+    Data_2(int x){	// 매개변수가 있는 생성자
+        value = x;
+    }
+}
+
+class Ex6_11 {
+    public static void main(String[] args){
+        Data_1 d1 = new Data_1();
+        Data_2 d2 = new Data_2();	// compile error발생
+    }
+}
+```
+
+**결과**
+
+```
+Ex6_11.java:15: cannot resolve symbol
+symbol : constructor Data_2 ()
+location: class Data_2
+			Data_2 d2 = new Data_2();
+```
+
+✔ Data_1 클래스는 생성자가 존재하지 않기 때문에, 컴파일러가 기본 생성자를 자동으로 추가해주었다.
+
+✔ Data_2 클래스에 기본 생성자 `Data_2(){}`을 추가해주어야한다.
+
+
+
+#### 매개변수가 있는 생성자
+
+```java
+class Car{
+    String color;			// 색상
+    String gearType;		// 변속기 종류 - auto(자동), manual(수동)
+    int door;				// 문의 개수
+    
+    Car(){}	// 기본 생성자
+    Car(String c, String g, int d){	// 매개변수가 있는 생성자
+        color = c;
+        gearType = g;
+        door = d;
+    }
+}
+```
+
+![image-20220925224247137](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220925224247137.png)
+
+✔ `new`: 객체 생성
+
+✔ `Car("white", "auto", 4)`: 객체 초기화, 생성자 호출
+
+✔ `=`: 대입(연결)
+
+
+
+#### 생성자 this()
+
+생성자에서 다른 생성자 호출할 때 사용
+
+다른 생성자 호출시 첫 줄에서만 사용가능
+
+```java
+class Car2 {
+    String color;			// 색성
+    String gearType;		// 변속기 종류 - auto(자동), manual(수동)
+    int door;				// 문의 개수
+    
+    Car2(){	// Car2(String color, String gearType, int door)를 호출
+        this("white", "auto", 4);
+    }
+    
+    Car2(String color){	// Car2(String color, String gearType, int door)를 호출
+        this(color, "auto", 4);
+    }
+    
+    Car2(String color, String gearType, int door){
+        this.color = color;
+        this.gearType = gearType;
+        this.door = door;
+    }
+}
+```
+
+
+
+❗ 다른 생성자 호출시 첫 줄에서만 사용가능
+
+```java
+Car(String color){
+    door = 5;
+    Car(color, "auto", 4);	// 에러 발생
+}
+```
+
+1. 첫 줄에서 사용하지 않았다.
+2. class이름 대신this를 사용하지 않았다.
+
+코드의 중복을제거하기 위해 생성자를 통해 호출한다.
+
+![image-20220925225121989](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220925225121989.png)
+
+
+
+#### 참조변수 this
+
+❗ this() 생성자와 다르다.
+
+인스턴스 자신을 가리키는 참조변수
+
+인스턴스 메서드(생성자 포함)에서 사용가능하다.
+
+지역변수(lv)와 인스턴스 변수(iv)를 구별할 때 사용한다.
+
+![image-20220925225430715](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220925225430715.png)
+
+**iv**
+
+* this.color
+* this.gearType
+* this.door
+
+✔ 같은 클래스 내에서 생략이 가능하다.
+
+✔ 오른쪽 예시처럼 구분을 위해서 this를 사용(this.참조변수(변수이름))
+
+**lv**
+
+* String color
+* String gearType
+* int door
+* color
+* gearType
+* door
+
+
+
+#### 참조변수 this와 생성자 this()
+
+**this**
+
+* 인스턴스 자신을 가리키는 참조변수, 인스턴스의 주소가 저장되어 있다.
+
+* 모든 인스턴스 메서드에 지역변수로 숨겨진 채로 존재한다.(this을 선언하지 않아도 사용 가능하다)
+
+**this(), this(매개변수)**
+
+* 생성자
+
+* 같은 클래스의 다른 생성자를 호출할 때 사용한다.
+
+✔ this와 this()는 비슷하게 생겼을 뿐 완전히 다른 것이다.
+
+✔ this는 '참조 변수'
+
+✔ this()는 '생성자'
+
+
+
+#### 변수의 초기화
+
+지역변수(lv)는 수동 초기화 해야한다. **(사용전 꼭!!!)**
+
+멤버변수(iv, cv)는 자동 초기화 된다.
+
+```java
+class InitTest{
+    int x;			// 인스턴스 변수 
+    int y = x;		// 인스턴스 변수
+    
+    void method1(){
+        int i;		// 지역변수
+        int j = i;	// 에러. 지역변수를 초기화하지 않고 사용
+    }
+}
+```
+
+✔ 인스턴스 변수 - 자동
+
+✔ 지역변수 - 수동
+
+
+
+자동 초기화는 Type에 따라 기본값이 다르다.
+
+기본적으로 0으로 초기화된다.
+
+![image-20220926230524856](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220926230524856.png)
+
+#### 멤버변수의 초기화
+
+멤버변수(iv, ic)
+
+##### 1. 명시적 초기화(=)
+
+대입연산자를 이용하여 초기화, 선언시
+
+```java
+class Car{
+    int door = 4;				// 기본형(primitive type) 변수의 초기화
+    Engine e = new Engine();	// 참조형(reference type) 변수의 초기화
+}
+```
+
+✔ 참조형 변수의 기본값은 null
+
+✔ 참조형 변수의 초기화는 객체를 생성해서 넣어주어야한다.
+
+
+
+##### 2. 초기화 블럭
+
+* 인스턴스 초기화 블럭: {} - **iv**
+
+* 클래스 초기화 블럭: static{} - **cv**
+
+```java
+class StaticBlockTest {
+    static int[] arr = new int[10];	// 명시적 초기화 = 간단 초기화
+    
+    static {	// 클래스 초기화 블럭 - 배열 arr을 난수로 채운다. = 복잡 초기화
+        for (int i=0; i<arr.length; i++){
+            arr[i] = (int)(Math.random()*10)+1;
+        }
+    }
+}
+```
+
+
+
+##### 3. 생성자
+
+iv 초기화, 복잡한 초기화에 사용
+
+```java
+Car(Stirng color, String gearType, int door){	// 매개변수 있는 생성자
+    this.color = color;
+    this.gearType = gearType;
+    this.door = door;
+}
+```
+
+
+
+##### 정리하면
+
+1. 자동초기화 **0**으로 초기화
+
+2. 간단 초기화 **=**(대입연산자 이용)
+
+3. 복잡 초기화: 
+
+   **{}** : 많이 사용하지 않는다.
+
+   **static{}** : cv
+
+   **생성자** : iv
+
+
+
+클래스 변수 초기화 시점
+
+* 클래스가 처음 로딩될 때 단 한번
+* 클래스가 메모리에 올라갈 때
+
+인스턴스 변수 초기화 시점
+
+* 인스턴스가 생성될 때 마다
+
+```java
+class InitTest {
+    static int cv = 1;	// 명시적 초기화
+    int iv = 1;			// 명시적 초기화
+    
+    static { cv = 2; }	// 클래스 초기화 블럭
+    {	iv = 2; }		// 인스턴스 초기화 블럭
+    
+    InitTest(){			// 생성자
+        iv = 3;
+    }
+}
+```
+
+
+
+`initTest it = new InitTest();`
+
+![image-20220926232158280](Chapter6%20%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20I.assets/image-20220926232158280.png)
+
+**클래스 초기화**
+
+1. 자동 초기화
+2. 간단 초기화(=)
+3. 복잡 초기화 (static{})
+
+**인스턴스 초기화**
+
+4. 자동 초기화
+5. 간단 초기화(=)
+6. 복잡 초기화
+7. 복잡 초기화
+
+
+
+#### ❗ 초기화 순서
+
+**cv 초기화 된 후 iv가 초기화된다.**
+
+**자동 ▶ 간단 ▶ 복잡 순서로 초기화된다.**
